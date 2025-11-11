@@ -1,8 +1,8 @@
 import os
 import pandas as pd
 import json
-# Adjust this path to where you've extracted the PHEME dataset
-data_path = './pheme-rumour-scheme-dataset'  # Change as needed
+
+data_path = './pheme-rumour-scheme-dataset'  
 def load_pheme_data(data_path):
     all_data = []
     for event in os.listdir(data_path):
@@ -30,8 +30,8 @@ df.head()
 import os
 import json
 import pandas as pd
-# Adjust this path to where you've extracted the PHEME dataset
-data_path = './pheme-rumour-scheme-dataset'  # Change as needed
+
+data_path = './pheme-rumour-scheme-dataset' 
 def load_pheme_data(base_path: str) -> pd.DataFrame:
     """Load PHEME source tweets and basic metadata.
     Expected layout (as in this repo):
@@ -59,7 +59,7 @@ def load_pheme_data(base_path: str) -> pd.DataFrame:
                 src_dir = os.path.join(thread_path, 'source-tweets')
                 src_file = os.path.join(src_dir, f'{thread_id}.json')
                 if not os.path.isfile(src_file):
-                    # Some datasets may slightly differ; skip if missing
+                    
                     continue
                 try:
                     with open(src_file, 'r', encoding='utf-8') as f:
@@ -74,7 +74,7 @@ def load_pheme_data(base_path: str) -> pd.DataFrame:
                     try:
                         with open(annot_file, 'r', encoding='utf-8') as af:
                             annot = json.load(af)
-                        # Add a few useful fields if present
+                        
                         tweet['is_rumour'] = annot.get('is_rumour')
                         tweet['veracity_true'] = annot.get('true')
                         tweet['misinformation'] = annot.get('misinformation')
@@ -95,4 +95,5 @@ else:
     print("Variables (columns):", list(df.columns))
     print("Data types:\n", df.dtypes)
     print("Missing values (per column):\n", df.isnull().sum())
+
     print("\nSample rows:\n", df.head())
