@@ -1,14 +1,3 @@
-"""
-Full TF-IDF text processing pipeline to generate a CSV file where:
-
-- Each row = one document
-- Each column = a word in the vocabulary
-- Each cell = TF-IDF weight of that word in the document
-
-Output:
-    tfidf_matrix.csv
-"""
-
 import os
 import json
 import re
@@ -16,35 +5,23 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-# ----------------------------------------------------------
-# (1) TEXT CLEANING FUNCTION
-# ----------------------------------------------------------
+#TEXT CLEANING FUNCTION
+
 def clean_text(text):
     if not isinstance(text, str):
         return ""
 
-    # Lowercase
     text = text.lower()
-
-    # Remove URLs
     text = re.sub(r"http\S+|www\S+|https\S+", "", text)
-
-    # Remove mentions and hashtags
     text = re.sub(r"@[A-Za-z0-9_]+", "", text)
     text = re.sub(r"#[A-Za-z0-9_]+", "", text)
-
-    # Remove non-alphanumeric characters
     text = re.sub(r"[^a-z0-9\s]", " ", text)
-
-    # Remove extra spaces
     text = re.sub(r"\s+", " ", text).strip()
 
     return text
 
 
-# ----------------------------------------------------------
-# (2) LOAD DOCUMENTS (YOU CAN EDIT THIS PART)
-# ----------------------------------------------------------
+#LOAD DOCS 
 
 # Example: documents from a dictionary (user provided earlier)
 # Replace with your own: thread_texts, source tweets, etc.
@@ -88,9 +65,8 @@ def load_documents(base_path="./all-rnr-annotated-threads"):
     return documents, doc_ids
 
 
-# ----------------------------------------------------------
-# (3) BUILD TF-IDF MATRIX
-# ----------------------------------------------------------
+#BUILD TF-IDF MATRIX
+
 def build_tfidf_matrix(documents, max_features=5000):
     vectorizer = TfidfVectorizer(
         stop_words="english",
@@ -104,9 +80,8 @@ def build_tfidf_matrix(documents, max_features=5000):
     return tfidf_matrix, feature_names
 
 
-# ----------------------------------------------------------
-# (4) CONVERT TO DENSE CSV (SAFE!)
-# ----------------------------------------------------------
+#CONVERT TO DENSE CSV
+
 def save_tfidf_to_csv(tfidf_matrix, feature_names, doc_ids, output_file="tfidf_matrix.csv"):
 
     # Convert sparse → dense safely
@@ -119,9 +94,6 @@ def save_tfidf_to_csv(tfidf_matrix, feature_names, doc_ids, output_file="tfidf_m
     print(f"Shape: {df.shape}")
 
 
-# ----------------------------------------------------------
-# (5) MAIN EXECUTION
-# ----------------------------------------------------------
 if __name__ == "__main__":
 
     # Step 1: Load documents
@@ -129,6 +101,7 @@ if __name__ == "__main__":
 
     # Step 2: Build TF-IDF
     tfidf_matrix, feature_names = build_tfidf_matrix(documents)
+    print(tfidf_matrix)
 
     # Step 3: Save to CSV
     save_tfidf_to_csv(tfidf_matrix, feature_names, doc_ids)
