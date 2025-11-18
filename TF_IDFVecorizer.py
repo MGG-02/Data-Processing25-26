@@ -1,87 +1,3 @@
-import os
-import json
-import re
-import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-
-
-#TEXT CLEANING FUNCTION
-
-def clean_text(text):
-    if not isinstance(text, str):
-        return ""
-
-    #deleting from the set URLS, web pages, @, #, spaces,...
-    text = text.lower()
-    text = re.sub(r"http\S+|www\S+|https\S+", "", text)
-    text = re.sub(r"@[A-Za-z0-9_]+", "", text)
-    text = re.sub(r"#[A-Za-z0-9_]+", "", text)
-    text = re.sub(r"[^a-z0-9\s]", " ", text)
-    text = re.sub(r"\s+", " ", text).strip()
-
-    return text
-
-
-#LOAD DOCS 
-
-# Example: documents from a dictionary (user provided earlier)
-# Replace with your own: thread_texts, source tweets, etc.
-def load_documents(base_path="./all-rnr-annotated-threads"):
-    documents = []
-    doc_ids = []
-
-    for event in os.listdir(base_path):
-        event_path = os.path.join(base_path, event)
-        if not os.path.isdir(event_path):
-            continue
-
-        # Only inside "rumours"
-        rumours_path = os.path.join(event_path, "rumours")
-        if not os.path.isdir(rumours_path):
-            continue
-
-        for thread_id in os.listdir(rumours_path):
-            if "_" in thread_id:
-                continue
-
-            thread_dir = os.path.join(rumours_path, thread_id)
-            source_file = os.path.join(thread_dir, "source-tweets", f"{thread_id}.json")
-
-            if not os.path.exists(source_file):
-                continue
-
-            # Read source tweet
-            with open(source_file, "r") as f:
-                src = json.load(f)
-                text = src.get("text", "")
-
-            # Clean the text
-            text_clean = clean_text(text)
-
-            # Save
-            documents.append(text_clean)
-            doc_ids.append(thread_id)
-
-    print(f"Loaded {len(documents)} documents.")
-    return documents, doc_ids
-
-
-#BUILD TF-IDF MATRIX
-
-def build_tfidf_matrix(documents, max_features=5000):
-    vectorizer = TfidfVectorizer(
-        stop_words="english",
-        max_features=max_features,
-        ngram_range=(1, 2)     # unigrams + bigrams
-    )
-
-    tfidf_matrix = vectorizer.fit_transform(documents)
-    feature_names = vectorizer.get_feature_names_out()
-
-    return tfidf_matrix, feature_names
-
-
-#CONVERT TO DENSE CSV
 
 def save_tfidf_to_csv(tfidf_matrix, feature_names, doc_ids, output_file="tfidf_matrix.csv"):
 
@@ -94,17 +10,23 @@ def save_tfidf_to_csv(tfidf_matrix, feature_names, doc_ids, output_file="tfidf_m
     print(f"TF-IDF CSV saved: {output_file}")
     print(f"Shape: {df.shape}")
 
+    return df
 
-if __name__ == "__main__":
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
 
-    # Step 1: Load documents
-    documents, doc_ids = load_documents()
+# Carga los datos preprocesados desde el archivo CSV
+data_path = 'csv_Dataset.csv'
+pheme_df = pd.read_csv(data_path)
 
-    # Step 2: Build TF-IDF
-    tfidf_matrix, feature_names = build_tfidf_matrix(documents)
-    print(tfidf_matrix)
 
-    # Step 3: Save to CSV
-    save_tfidf_to_csv(tfidf_matrix, feature_names, doc_ids)
+# Definir el vectorizador TF-IDF y ajustar a los resúmenes preprocesados
+tfidf_vectorizer = TfidfVectorizer(max_features=1000)  # Usamos las 1000 palabras más importantes
+X_tfidf = tfidf_vectorizer.fit_transform(pheme_df['text'])
+feature_names = tfidf_vectorizer.get_feature_names_out()
 
-    print("Done.")
+# Convertir a DataFrame para una mejor visualización y manipulación
+X_tfidf_df = save_tfidf_to_csv(X_tfidf, feature_names, pheme_df['thread_id'])
+
+# Mostrar las características y algunos valores de TF-IDF
+print(X_tfidf_df.head())
