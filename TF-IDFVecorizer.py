@@ -1,74 +1,136 @@
-### --- TF-IDF computes the score for specific terms in Documents. How many times a word appears in the texts. TF = nº_appearances / total_nºwords --- ###
+"""
+Full TF-IDF text processing pipeline to generate a CSV file where:
+
+- Each row = one document
+- Each column = a word in the vocabulary
+- Each cell = TF-IDF weight of that word in the document
+
+Output:
+    tfidf_matrix.csv
+"""
 
 import os
 import json
+import re
 import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-from DatasetGeneralDescription import load_pheme_data
+# ----------------------------------------------------------
+# (1) TEXT CLEANING FUNCTION
+# ----------------------------------------------------------
+def clean_text(text):
+    if not isinstance(text, str):
+        return ""
 
-# base_path = 'pheme-rumour-scheme-dataset'
-base_path = './6392078/all-rnr-annotated-threads'
-df = load_pheme_data(base_path)
+    # Lowercase
+    text = text.lower()
 
-# Create thread_id -> full text (source + replies) dictionary
-thread_texts = {}
+    # Remove URLs
+    text = re.sub(r"http\S+|www\S+|https\S+", "", text)
 
-threads_dir = os.path.join(base_path, 'threads')
-for event in os.listdir(threads_dir):
-    event_path = os.path.join(lang_path, event)
-    
+    # Remove mentions and hashtags
+    text = re.sub(r"@[A-Za-z0-9_]+", "", text)
+    text = re.sub(r"#[A-Za-z0-9_]+", "", text)
+
+    # Remove non-alphanumeric characters
+    text = re.sub(r"[^a-z0-9\s]", " ", text)
+
+    # Remove extra spaces
+    text = re.sub(r"\s+", " ", text).strip()
+
+    return text
 
 
-for lang in os.listdir(threads_dir):
-    lang_path = os.path.join(threads_dir, 'en') #just for english language
-    for event in os.listdir(lang_path):
-        event_path = os.path.join(lang_path, event)
-        for thread_id in os.listdir(event_path):
-            thread_path = os.path.join(event_path, thread_id)
-            source_file = os.path.join(thread_path, 'source-tweets', thread_id + '.json')
-            replies_dir = os.path.join(thread_path, 'reactions')
+# ----------------------------------------------------------
+# (2) LOAD DOCUMENTS (YOU CAN EDIT THIS PART)
+# ----------------------------------------------------------
+
+# Example: documents from a dictionary (user provided earlier)
+# Replace with your own: thread_texts, source tweets, etc.
+def load_documents(base_path="./all-rnr-annotated-threads"):
+    documents = []
+    doc_ids = []
+
+    for event in os.listdir(base_path):
+        event_path = os.path.join(base_path, event)
+        if not os.path.isdir(event_path):
+            continue
+
+        # Only inside "rumours"
+        rumours_path = os.path.join(event_path, "rumours")
+        if not os.path.isdir(rumours_path):
+            continue
+
+        for thread_id in os.listdir(rumours_path):
+            if "_" in thread_id:
+                continue
+
+            thread_dir = os.path.join(rumours_path, thread_id)
+            source_file = os.path.join(thread_dir, "source-tweets", f"{thread_id}.json")
+
+            if not os.path.exists(source_file):
+                continue
 
             # Read source tweet
-            with open(source_file, 'r') as f:
-                source_tweet = json.load(f)
-                full_text = source_tweet.get('text', '')
+            with open(source_file, "r") as f:
+                src = json.load(f)
+                text = src.get("text", "")
 
-            # Append replies
-            if os.path.exists(replies_dir):
-                for reply_file in os.listdir(replies_dir):
-                    with open(os.path.join(replies_dir, reply_file), 'r') as rf:
-                        reply = json.load(rf)
-                        reply_text = reply.get('text', '')
-                        full_text += ' ' + reply_text  # simple space concatenation
+            # Clean the text
+            text_clean = clean_text(text)
 
-            # Store it
-            thread_texts[thread_id] = full_text
+            # Save
+            documents.append(text_clean)
+            doc_ids.append(thread_id)
 
-# print(thread_texts)
+    print(f"Loaded {len(documents)} documents.")
+    return documents, doc_ids
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-import scipy
 
-# Convert to DataFrame
-tfidf_df = pd.DataFrame(list(thread_texts.items()), columns=['thread_id', 'full_text'])
+# ----------------------------------------------------------
+# (3) BUILD TF-IDF MATRIX
+# ----------------------------------------------------------
+def build_tfidf_matrix(documents, max_features=5000):
+    vectorizer = TfidfVectorizer(
+        stop_words="english",
+        max_features=max_features,
+        ngram_range=(1, 2)     # unigrams + bigrams
+    )
 
-# Initialize TF-IDF vectorizer
-vectorizer = TfidfVectorizer(stop_words='english', max_df=0.95, min_df=2)
+    tfidf_matrix = vectorizer.fit_transform(documents)
+    feature_names = vectorizer.get_feature_names_out()
 
-# Fit and transform
-tfidf_matrix = vectorizer.fit_transform(tfidf_df['full_text'])
+    return tfidf_matrix, feature_names
 
-print(type(tfidf_matrix))
 
-# Get feature names
-feature_names = vectorizer.get_feature_names_out()
-print(feature_names.shape)
+# ----------------------------------------------------------
+# (4) CONVERT TO DENSE CSV (SAFE!)
+# ----------------------------------------------------------
+def save_tfidf_to_csv(tfidf_matrix, feature_names, doc_ids, output_file="tfidf_matrix.csv"):
 
-tfidf_matrix = tfidf_matrix
+    # Convert sparse → dense safely
+    tfidf_dense = tfidf_matrix.toarray()
 
-tfidf_result = pd.DataFrame(tfidf_matrix.toarray(), columns=feature_names, index=tfidf_df['thread_id']) # type: ignore
+    df = pd.DataFrame(tfidf_dense, index=doc_ids, columns=feature_names)
 
-# Optional: Save the result to CSV
-tfidf_result.to_csv("tfidf_matrix.csv")
-print("TF-IDF matrix saved to tfidf_matrix.csv")
+    df.to_csv(output_file)
+    print(f"TF-IDF CSV saved: {output_file}")
+    print(f"Shape: {df.shape}")
+
+
+# ----------------------------------------------------------
+# (5) MAIN EXECUTION
+# ----------------------------------------------------------
+if __name__ == "__main__":
+
+    # Step 1: Load documents
+    documents, doc_ids = load_documents()
+
+    # Step 2: Build TF-IDF
+    tfidf_matrix, feature_names = build_tfidf_matrix(documents)
+
+    # Step 3: Save to CSV
+    save_tfidf_to_csv(tfidf_matrix, feature_names, doc_ids)
+
+    print("Done.")

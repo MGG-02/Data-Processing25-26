@@ -4,9 +4,15 @@ folds= ['charliehebdo-all-rnr-threads','ottawashooting-all-rnr-threads',
 'germanwings-crash-all-rnr-threads',
 'gurlitt-all-rnr-threads','sydneysiege-all-rnr-threads']
 
+# folds= ['charliehebdo','ottawashooting',
+# 'ebola-essien','prince-toronto',
+# 'ferguson',	'putinmissing',
+# 'germanwings-crash','sydneysiege']
+
 
 # the annotations on PHEME have 2 boolean values, 'misinformation' value and 'true' value, we want to convert them in a single label with values
 # 'true', 'false' or 'unverified'. This values can be string or numerical, depending on the 'string' parameter of the function
+# If missinformation = 1 means that the tweet is missinformation (false/invented), true=1 means that the tweet is verified true 
 #obtained from: https://github.com/ManuelCecere/fake_news_detection
 
 def convert_annotations_data(annotation, string = True):
