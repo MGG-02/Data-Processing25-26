@@ -1,3 +1,6 @@
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+
 
 def save_tfidf_to_csv(tfidf_matrix, feature_names, doc_ids, output_file="tfidf_matrix.csv"):
 
@@ -11,9 +14,6 @@ def save_tfidf_to_csv(tfidf_matrix, feature_names, doc_ids, output_file="tfidf_m
     print(f"Shape: {df.shape}")
 
     return df
-
-import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
 
 # Carga los datos preprocesados desde el archivo CSV
 data_path = 'csv_Dataset.csv'
