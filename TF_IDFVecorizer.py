@@ -30,3 +30,48 @@ X_tfidf_df = save_tfidf_to_csv(X_tfidf, feature_names, pheme_df['thread_id'])
 
 # Mostrar las características y algunos valores de TF-IDF
 print(X_tfidf_df.head())
+
+                                                    #####################################
+                                                    # ----- CLASSIFICATION MODELS ----- #
+                                                    #####################################
+
+
+#####################################
+# -----   Scikit-learn ALG    ----- #
+#####################################
+
+from sklearn.svm import LinearSVC
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, accuracy_score
+
+X = X_tfidf_df.values
+Y = pheme_df['target']
+
+X_train, X_temp, y_train, y_temp = train_test_split(
+    X, Y, test_size=0.30, random_state=42, stratify=Y
+)
+
+# Second split: Validation + Test
+X_val, X_test, y_val, y_test = train_test_split(
+    X_temp, y_temp, test_size=0.50, random_state=42, stratify=y_temp
+)
+
+print("Train shape:", X_train.shape)
+print("Val shape:", X_val.shape)
+print("Test shape:", X_test.shape)
+
+
+Lclas = LinearSVC()
+Lclas.fit(X_train, y_train)
+y_val_pred = Lclas.predict(X_val)
+
+print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
+print("\nClassification Report (Validation):")
+print(classification_report(y_val, y_val_pred))
+y_test_pred = Lclas.predict(X_test)
+print(y_test_pred)
+print(accuracy_score(y_test, y_test_pred))
+
+#####################################
+# -----      Pytorch NN       ----- #
+#####################################

@@ -3,6 +3,7 @@ import torch
 from transformers import BertTokenizer, BertModel
 import numpy as np
 import pandas as pd
+from tabulate import tabulate
 from load_dataset import *
 
 random_seed = 42
@@ -70,14 +71,25 @@ sum_mask = mask_expanded.sum(dim=1).clamp(min=1e-9)             # [2402, 1]
 sentence_embeddings = sum_embeddings / sum_mask                 # [2402, 768]
 
 X = sentence_embeddings
+print(X.shape)
 Y = pheme_df['target'].values
 
 
+                                                    #####################################
+                                                    # ----- CLASSIFICATION MODELS ----- #
+                                                    #####################################
+
+
 #####################################
-# ----- CLASSIFICATION MODELS ----- #
+# -----   Scikit-learn ALG    ----- #
 #####################################
 
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+
+le = LabelEncoder()
+Y = le.fit_transform(Y)     #type: ignore
+
 
 X = X.cpu().numpy()
 
@@ -93,16 +105,74 @@ print(f'Train shape: {X_train.shape}, Validation shape: {X_val.shape}, Test shap
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
+from sklearn.metrics import roc_auc_score
 
 reg = LogisticRegression(max_iter=10000)
 reg.fit(X_train, y_train)
 
 y_val_pred = reg.predict(X_val)
+y_val_proba = reg.predict_proba(X_val)
+report_dict = classification_report(y_val, y_val_pred, output_dict=True)
+
+report_df = pd.DataFrame(report_dict).transpose() #Just for visualization
+
 print("Validation report (LogReg on BERT embeddings):")
-print(classification_report(y_val, y_val_pred))
+print(tabulate(report_df, headers="keys", tablefmt="fancy_grid", floatfmt=".3f"))           #type:ignore
+print(f'ROC AUC Score for validation SET: {roc_auc_score(y_val, y_val_proba, multi_class='ovr')}')
 
 # Final eval on test set
 y_test_pred = reg.predict(X_test)
-print("Test report (LogReg on BERT embeddings):")
-print(classification_report(y_test, y_test_pred))
+y_test_proba = reg.predict_proba(X_test)
+report_dict = classification_report(y_test, y_test_pred, output_dict=True)
 
+report_df = pd.DataFrame(report_dict).transpose() #Just for visualization
+
+print("Test report (LogReg on BERT embeddings):")
+print(tabulate(report_df, headers="keys", tablefmt="fancy_grid", floatfmt=".3f"))                   #type:ignore
+print(f'ROC AUC Score for test SET: {roc_auc_score(y_test, y_test_proba, multi_class='ovr')}')
+
+
+#####################################
+# -----      Pytorch NN       ----- #
+#####################################
+from BERT_torch_clf import *
+from torch.utils.data import TensorDataset, DataLoader
+from sklearn.preprocessing import StandardScaler
+
+np.random.seed(42)
+
+X_trainval, X_test, y_trainval, y_test = train_test_split(
+    X, Y, test_size=0.2, random_state=42, stratify=Y) #type: ignore
+
+X_train, X_val, y_train, y_val = train_test_split(
+    X_trainval, y_trainval, test_size=0.25, random_state=42, stratify=y_trainval)
+
+#Normalize inputs for better performance
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_val = scaler.fit_transform(X_val)
+X_test = scaler.fit_transform(X_test)
+
+print(X_train.shape, X_val.shape, X_test.shape)
+X_train_t = torch.tensor(X_train, dtype=torch.float32, device=device)
+y_train_t = torch.tensor(y_train, dtype=torch.long, device=device)
+X_val_t = torch.tensor(X_val, dtype=torch.float32)
+y_val_t = torch.tensor(y_val, dtype=torch.long)
+X_test_t = torch.tensor(X_test, dtype=torch.float32)
+y_test_t = torch.tensor(y_test, dtype=torch.long)
+
+train_loader = DataLoader(TensorDataset(X_train_t, y_train_t), batch_size=64, shuffle=True)
+val_loader = DataLoader(TensorDataset(X_val_t, y_val_t), batch_size=64, shuffle=True)
+test_loader = DataLoader(TensorDataset(X_test_t, y_test_t), batch_size=64, shuffle=True)
+
+print(train_loader)
+
+print(len(train_loader),len(val_loader), len(test_loader))
+
+EPOCHS = 500000
+model = BertClassifier()
+LR = 5e-6
+              
+train(model, train_loader, val_loader, LR, EPOCHS)
+
+evaluate(model, test_loader)

@@ -40,7 +40,7 @@ from nltk.tokenize import wordpunct_tokenize
 def prepare_data(text):
 
     text = contractions.fix(text)                                 # expand contractions
-    soup = BeautifulSoup(text, "lxml")                            # remove HTML
+    soup = BeautifulSoup(text, "lxml")                            #type: ignore ,  remove HTML
     text = soup.get_text(separator=" ")
     text = re.sub(r'https?://\S+|www\.\S+', '', text)             # remove URLs
 
