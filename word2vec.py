@@ -44,7 +44,7 @@ X_train,X_temp,y_train,y_temp = train_test_split(X_w2v,Y,test_size=0.4,random_st
 # Split test/validation dataset 50/50 (20% -> Test dataset, 20% -> Validation dataset)
 X_val,X_test,y_val,y_test = train_test_split(X_temp,y_temp,test_size=0.5,random_state=42,stratify=y_temp)
 
-print("Datasets size")
+print("Scikit - Datasets size")
 print("Train:", X_train.shape, "\nVal:", X_val.shape, "\nTest:", X_test.shape)
 
 # Multiclass Logistic Regression model
@@ -65,3 +65,69 @@ print("Test report (LogReg on W2V embeddings):")
 print(classification_report(y_test, y_test_pred))
 print("Test Accuracy:", accuracy_score(y_test, y_test_pred))
 
+
+##########################################
+# -----   PyTorch NN CLASSIFIER    ----- #
+##########################################
+
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+import torch
+from torch import nn
+from torch.optim import Adam
+from torch.utils.data import TensorDataset, DataLoader
+from W2V_torch_clf import *
+
+# Label Encoding ('True' -> 0, 'False' -> 1, 'Unverified' -> 2)
+label_encoder = LabelEncoder()
+Y_encoded = label_encoder.fit_transform(Y)
+
+# 60% -> Training dataset, 40% -> Test/validation datasets
+X_train_nn,X_temp_nn,y_train_nn,y_temp_nn = train_test_split(X_w2v,Y_encoded,test_size=0.4,random_state=42,stratify=Y_encoded) #type: ignore
+
+# Split test/validation dataset 50/50 (20% -> Test dataset, 20% -> Validation dataset)
+X_val_nn,X_test_nn,y_val_nn,y_test_nn = train_test_split(X_temp_nn,y_temp_nn,test_size=0.5,random_state=42,stratify=y_temp_nn)
+
+print("PyTorch NN - Datasets size")
+print("Train:", X_train_nn.shape, "\nVal:", X_val_nn.shape, "\nTest:", X_test_nn.shape)
+
+# Standarize datasets
+scaler = StandardScaler()
+X_train_nn = scaler.fit_transform(X_train_nn)
+X_val_nn = scaler.transform(X_val_nn)
+X_test_nn = scaler.transform(X_test_nn)
+
+# CPU / GPU processing
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("Using device: ", device)
+
+# PyTorch tensors
+X_train_t = torch.tensor(X_train_nn,dtype=torch.float32)
+y_train_t = torch.tensor(y_train_nn,dtype=torch.long)
+
+X_val_t = torch.tensor(X_val_nn,dtype=torch.float32)
+y_val_t = torch.tensor(y_val_nn,dtype=torch.long)
+
+X_test_t = torch.tensor(X_test_nn,dtype=torch.float32)
+y_test_t = torch.tensor(y_test_nn,dtype=torch.long)
+
+# Data Loaders
+batch_size = 64
+
+train_loader = DataLoader(TensorDataset(X_train_t,y_train_t),
+                          batch_size=batch_size,shuffle=True)
+
+val_loader = DataLoader(TensorDataset(X_val_t,y_val_t),
+                        batch_size=batch_size,shuffle=False)
+
+test_loader = DataLoader(TensorDataset(X_test_t,y_test_t),
+                         batch_size=batch_size,shuffle=False)
+
+# Model training
+EPOCHS = 500
+LR = 1e-3
+w2v_model = Word2VecClassifier(input_dim=X_w2v.shape[1], 
+                               num_classes=len(label_encoder.classes_))
+train(w2v_model, train_loader, val_loader, learning_rate=LR, epochs=EPOCHS)
+
+# Model evaluation
+evaluate(w2v_model, test_loader)
