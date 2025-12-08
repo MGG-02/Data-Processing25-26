@@ -5,21 +5,21 @@ from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
 from torch.optim import Adam
 
 #1 Hidden layer in order to create loss
-class BertClassifier(nn.Module):
-    def __init__(self, input_dim = 768, num_classes=3, dropout=0.5):
+class tfidfClassifier(nn.Module):
+    def __init__(self, input_dim, num_classes=3, dropout=0.5):
         super().__init__()
 
         self.net = nn.Sequential(
             nn.LayerNorm(input_dim),
-            nn.Linear(input_dim, 448),
+            nn.Linear(input_dim, 128),
             nn.GELU(),
             nn.Dropout(dropout),
 
-            nn.Linear(448, 124),
+            nn.Linear(128, 64),
             nn.GELU(),
             nn.Dropout(dropout/2),
 
-            nn.Linear(124, num_classes)
+            nn.Linear(64, num_classes)
         ) 
 
     def forward(self, x):
