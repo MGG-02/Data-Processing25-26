@@ -22,23 +22,24 @@ To analyze how rumour-like (disinformative) content spreads and whether it refle
 
 ## 2. Dataset Description
 
-We use the **PHEME Rumour Scheme Dataset** [[1]](#1), containing Twitter posts annotated as **true**, **false**, or **unverified**.  
+We use the **PHEME Rumour Scheme Dataset** [[1]](#1), containing Twitter posts annotated as **Missinformation** (True/False) and **True** (0/1).
+In order to provide veracity of the Tweet, those labels are mapped into:
+
+- Missinformation & True == 0 → "Unverified"
+- Missinformation == 0 & True == 1 → "Verified"
+- Missinformation == 1 & True == 0 → "False"
+- Missinformation == 1 & True == 1 → "ERROR!!"
+
 It includes source tweets and full reply threads across multiple major news events.
 
 ### Dataset Summary  
-- **Total posts:** *[fill in]*  
+- **Total posts:** 2402 Rumour Tweets  
 - **Events:** e.g., Charlie Hebdo, Sydney Siege, Germanwings Crash  
 - **Classes:**  
-  - True: *[n]*  
-  - False: *[n]*  
-  - Unverified: *[n]*  
+  - True: *1067*  
+  - False: *638*  
+  - Unverified: *697*  
 - **Average post length:** *[n]* tokens  
-
-### Exploratory Analysis  
-- Distribution of classes  
-- Tweet length distribution  
-- Word frequency analysis and word clouds  
-- Example tweets per class  
 
 ### Initial Hypotheses  
 1. False and unverified posts use more uncertain or emotional vocabulary.  
@@ -49,17 +50,25 @@ It includes source tweets and full reply threads across multiple major news even
 
 ## 3. Methodology
 
-### 3.1 Preprocessing  
-- Text cleaning (URLs, mentions, punctuation)  
-- Lowercasing and emoji normalization  
-- Tokenization via HuggingFace tokenizer  
-- Stratified train/validation/test split (70/15/15)  
+Copy repo into local machine:
+
+<pre> bash: ~$ git clone https://github.com/MGG-02/Data-Processing25-26.git </pre>
+
+### 3.1 Exploratory Analysis  
+
+<pre> bash: ~$ python3 DataBasicStats-GenDescript.py </pre>
+
+- Dataset dimentions, data types and dataset samples  
+- Missing values  
+- Basic stats for numerical values (count, mean, std)  
+- Target Distribuition and samples for each veracity label
+- WordCloud  
 
 ---
 
 ## 3.2 Text Vector Representations
 
-We compared three embedding strategies:
+We compared three text vectorizing strategies:
 
 ### **A) TF-IDF**
 - Vocabulary size: 1,000–5,000  
