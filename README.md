@@ -68,19 +68,26 @@ Copy repo into local machine:
 
 ## 3.2 Text Vector Representations
 
-We compared three text vectorizing strategies:
+Three different text vectorization strategies are compared:
 
 ### **A) TF-IDF**
-- Vocabulary size: 1,000–5,000  
-- Unigrams + bigrams  
-- Produces sparse document vectors  
+
+_Term Frequency-Inverse Document Frequency_ is a text vectorization technique that expresses how relevant a word in a document is. Given by its formula:
+
+$$TF = \frac{BoW (w, d)}{\text{nº words in d}} \space \space ; \space \space IDF = \log{\frac{\text{nº Docs}}{\text{nº Docs with term w}}}$$
+
+$$TF-IDF = TF(w,d) \times IDF (w)$$
 
 ### **B) Word2Vec**
 - Pretrained embeddings or self-trained skip-gram model  
 - Document vector = average of word embeddings  
 
 ### **C) Transformer-Based Embeddings**
-(Using BERT, RoBERTa, or BERTweet)
+BERT Embeddings: The previous text vectorization techniques are unable to capture context in the sentences, this is why, the last vectorization used is BERT. BERT (_Bidirectional Encoder Representations from Transformers_) is a pretrained language model that uses bidirectional context to enhance performance on natural language processing tasks.[[2]](#2)
+
+![alt text]([http://url/to/img.png](https://tinkerd.net/img/tensorflow/bert-embedding-layer.png))
+
+
 - CLS token representation  
 - Mean pooling of final hidden layer  
 - Provides contextual, dynamic embeddings  
@@ -106,3 +113,8 @@ Input → Dense(256) → ReLU → Dropout → Dense(3) → Softmax
 Kochkina, Elena; Liakata, Maria; Zubiaga, Arkaitz (2018). 
 PHEME dataset for Rumour Detection and Veracity Classification. figshare.
 [Dataset](https://doi.org/10.6084/m9.figshare.6392078.v1)
+
+<a id="2">[2]</a> 
+David Liang (2024)
+Intro — Getting Started with Text Embeddings: Using BERT
+[](https://medium.com/@davidlfliang/intro-getting-started-with-text-embeddings-using-bert-9f8c3b98dee6)
