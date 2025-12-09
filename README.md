@@ -78,35 +78,54 @@ $$TF = \frac{BoW (w, d)}{\text{nº words in d}} \space \space ; \space \space ID
 
 $$TF-IDF = TF(w,d) \times IDF (w)$$
 
+The main purpouse for TF-IDF vectorization is counting words and deciding weather a word is more or less important in order to detect the topic/sentimient/etc.
+
 ### **B) Word2Vec**
 - Pretrained embeddings or self-trained skip-gram model  
 - Document vector = average of word embeddings  
 
 ### **C) Transformer-Based Embeddings**
-BERT Embeddings: The previous text vectorization techniques are unable to capture context in the sentences, this is why, the last vectorization used is BERT. BERT (_Bidirectional Encoder Representations from Transformers_) is a pretrained language model that uses bidirectional context to enhance performance on natural language processing tasks.[[2]](#2)
+**BERT** Embeddings: The previous text vectorization techniques are unable to capture context in the sentences, this is why, the last vectorization used is BERT. BERT (_Bidirectional Encoder Representations from Transformers_) is a pretrained language model that uses bidirectional context to enhance performance on natural language processing tasks.[[2]](#2)
 
 ![Project Logo](images/bert-embedding-layer.png)
 
+Because BERT captures nuanced semantic and emotional signals, it is particularly well-suited for detecting disinformation patterns and ideological polarization in social media posts.
 
-- CLS token representation  
-- Mean pooling of final hidden layer  
-- Provides contextual, dynamic embeddings  
-
+BERT excels at:
+  - Capturing subtle sentiment and linguistic cues
+  - Understanding stance, irony, or emotionally charged language
+  - Differentiating between factual vs. manipulative phrasing
+  - Modeling ideologically polarized vocabulary shifts
+  
 ---
 
 ## 3.3 Classification Models
 
 ### **Classical Models (Scikit-Learn)**
-Trained on TF-IDF and Word2Vec vectors:
-- Logistic Regression  
+
+In order to create models able to classify weather a Tweet is _True_, _False_ or _Unverified_, several Scikit-Learn Classifiers have been selected:
+
+- Logistic Regression
 - SVM  
 - Random Forest  
-- (Optional) KNN  
+
+| Model | Type | Captures Nonlinearity | Pros | Cons | Works Well With |
+|-------|------|------------------------|------|------|------------------|
+| **Logistic Regression** | Linear | No | Simple, fast, interpretable, strong baseline | Limited for complex patterns | High-dimensional embeddings (TF-IDF, BERT) |
+| **SVM** | **Linear**/Nonlinear | Yes (with kernels) | Strong performance, robust to outliers | Slow on large datasets, requires tuning | High-dimensional features (especially linear kernel) |
+| **Random Forest** | Tree Ensemble | Yes | Captures complex patterns, robust to noise, feature importance | Weak on dense high-dimensional embeddings, can overfit | Tabular data or sparse text vectors |
 
 ### **PyTorch Neural Network**
+
+To explore different ways of Tweet classification/Spread of desinformation, a Pytorch Neural Network has been created. Neural Networks (**NN**) can learn nonlinear relationships that scikit-learn models struggle with. This is usefull when working with text representation via embeddings, where context vectors dimentions are complex.
+
+Another advantage of NN is the high customization of the model, where dimension and number of layers, activation functions, dropout, loss function, optimizers, etc can be tunned in order to increase performance, reduce loss and increase accuracy.
+
+To end up with the advantages of NN, Pytorch provides GPU acceleration, meaning that the created model can be tranfered to the GPU to increase training, validation and test speed.
+
 Architecture:
 
-Input → Dense(256) → ReLU → Dropout → Dense(3) → Softmax
+![Project Logo](images/NN-1.png)
 
 ### References
 <a id="1">[1]</a> 
