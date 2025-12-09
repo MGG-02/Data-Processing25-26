@@ -22,7 +22,7 @@ To analyze how rumour-like (disinformative) content spreads and whether it refle
 
 ## 2. Dataset Description
 
-We use the **PHEME Rumour Scheme Dataset**, containing Twitter posts annotated as **true**, **false**, or **unverified**.  
+We use the **PHEME Rumour Scheme Dataset** [[1]](#1), containing Twitter posts annotated as **true**, **false**, or **unverified**.  
 It includes source tweets and full reply threads across multiple major news events.
 
 ### Dataset Summary  
