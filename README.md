@@ -91,3 +91,9 @@ Trained on TF-IDF and Word2Vec vectors:
 Architecture:
 
 Input → Dense(256) → ReLU → Dropout → Dense(3) → Softmax
+
+### References
+<a id="1">[1]</a> 
+Kochkina, Elena; Liakata, Maria; Zubiaga, Arkaitz (2018). 
+PHEME dataset for Rumour Detection and Veracity Classification. figshare.
+[Dataset](https://doi.org/10.6084/m9.figshare.6392078.v1)
