@@ -85,7 +85,7 @@ $$TF-IDF = TF(w,d) \times IDF (w)$$
 ### **C) Transformer-Based Embeddings**
 BERT Embeddings: The previous text vectorization techniques are unable to capture context in the sentences, this is why, the last vectorization used is BERT. BERT (_Bidirectional Encoder Representations from Transformers_) is a pretrained language model that uses bidirectional context to enhance performance on natural language processing tasks.[[2]](#2)
 
-![alt text]([http://url/to/img.png](https://tinkerd.net/img/tensorflow/bert-embedding-layer.png))
+![Project Logo](images/bert-embedding-layer.png)
 
 
 - CLS token representation  
