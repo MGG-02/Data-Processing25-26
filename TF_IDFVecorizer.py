@@ -41,7 +41,9 @@ print(X_tfidf_df.head())
 # -----   Scikit-learn ALG    ----- #
 #####################################
 
+from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
@@ -62,6 +64,21 @@ X_val, X_test, y_val, y_test = train_test_split(
     X_temp, y_temp, test_size=0.50, random_state=42, stratify=y_temp
 )
 
+print('\n'+'### ---  Logistic Regression --- ###' + '\n')
+
+clf = LogisticRegression(solver="lbfgs",class_weight="balanced",max_iter=100)
+clf.fit(X_train, y_train)
+y_val_pred = clf.predict(X_val)
+
+print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
+
+y_test_pred = clf.predict(X_test)
+print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
+print(f'Test Roc Auc Score: {roc_auc_score(y_test, clf.predict_proba(X_test), multi_class='ovr')}')
+print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
+
+print('\n' + '### --- SVM Classifier --- ###' + '\n')
+
 Lclas = LinearSVC()
 clf = CalibratedClassifierCV(Lclas).fit(X_train, y_train)
 y_val_pred = clf.predict(X_val)
@@ -71,6 +88,26 @@ print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
 y_test_pred = clf.predict(X_test)
 print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
 print(f'Test Roc Auc Score: {roc_auc_score(y_test, clf.predict_proba(X_test), multi_class='ovr')}')
+print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
+
+print('\n'+'### ---  Random Forest Classification --- ###' + '\n')
+
+rf = RandomForestClassifier(
+    n_estimators=300,
+    max_depth=None,
+    random_state=42,
+    n_jobs=-1
+).fit(X_train, y_train)
+
+y_val_pred = rf.predict(X_val)
+
+print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
+
+y_test_pred = rf.predict(X_test)
+y_test_proba = rf.predict_proba(X_test)
+
+print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
+print(f"ROC AUC Score for test SET: {roc_auc_score(y_test, y_test_proba, multi_class='ovr')}")
 print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
 
 #####################################
@@ -104,7 +141,7 @@ test_loader = DataLoader(TensorDataset(X_test_t, y_test_t), batch_size=batch_siz
 epochs = 3000
 model = tfidfClassifier(max_features)
 LR = 5e-6
-print("PYTORCH NN")
+print('\n'+'### ---  PYTORCH NN --- ###' + '\n')
 train(model, train_loader, val_loader, LR, epochs)
 epochs = range(1, len(history["train_loss"]) + 1)
 
