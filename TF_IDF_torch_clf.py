@@ -5,7 +5,6 @@ from tqdm import trange, tqdm
 from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
 from torch.optim import Adam
 
-#1 Hidden layer in order to create loss
 class tfidfClassifier(nn.Module):
     def __init__(self, input_dim, hidden_dim=128, num_classes=3, dropout=0.5):
         super().__init__()
@@ -29,7 +28,6 @@ history = {
 def train(model, train_dataloader, val_dataloader, learning_rate, epochs):
 
     pbar = trange(epochs, desc="Training")
-    # CPU / GPU processing
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
@@ -38,7 +36,6 @@ def train(model, train_dataloader, val_dataloader, learning_rate, epochs):
 
     for epoch in pbar:
 
-        # --- Train ---
         model.train()
         total_acc_train = 0
         total_loss_train = 0
@@ -63,7 +60,6 @@ def train(model, train_dataloader, val_dataloader, learning_rate, epochs):
         avg_train_loss = total_loss_train / len(train_dataloader)
         train_acc = total_acc_train / total_examples_train
 
-        # --- Valuation ---
         model.eval()
         total_loss_val = 0.0
         total_acc_val = 0.0
@@ -99,7 +95,6 @@ def train(model, train_dataloader, val_dataloader, learning_rate, epochs):
 
 def evaluate(model, test_dataloader):
 
-    # CPU / GPU processing
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     model.eval()
