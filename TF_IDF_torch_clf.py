@@ -1,32 +1,45 @@
 import torch
 import numpy as np
 from torch import nn
+from tqdm import trange, tqdm
 from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
 from torch.optim import Adam
 
 #1 Hidden layer in order to create loss
 class tfidfClassifier(nn.Module):
-    def __init__(self, input_dim, num_classes=3, dropout=0.5):
+    def __init__(self, input_dim, hidden_dim=128, num_classes=3, dropout=0.5):
         super().__init__()
 
         self.net = nn.Sequential(
-            nn.LayerNorm(input_dim),
-            nn.Linear(input_dim, 128),
-            nn.GELU(),
+            nn.Linear(input_dim, hidden_dim),
             nn.Dropout(dropout),
+            nn.Linear(hidden_dim, num_classes)
 
-            nn.Linear(128, 64),
-            nn.GELU(),
-            nn.Dropout(dropout/2),
+            # nn.LayerNorm(input_dim),
+            # nn.Linear(input_dim, 128),
+            # nn.GELU(),
+            # nn.Dropout(dropout),
 
-            nn.Linear(64, num_classes)
+            # nn.Linear(128, 64),
+            # nn.GELU(),
+            # nn.Dropout(dropout/2),
+
+            # nn.Linear(64, num_classes)
         ) 
 
     def forward(self, x):
         return self.net(x)
-    
+
+history = {
+    "train_loss": [],
+    "val_loss": [],
+    "train_acc": [],
+    "val_acc": []
+}
+
 def train(model, train_dataloader, val_dataloader, learning_rate, epochs):
 
+    pbar = trange(epochs, desc="Training")
     # CPU / GPU processing
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
@@ -34,7 +47,7 @@ def train(model, train_dataloader, val_dataloader, learning_rate, epochs):
     criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
     optimizer = Adam(model.parameters(), lr= learning_rate, weight_decay=1e-4)
 
-    for epoch in range(epochs):
+    for epoch in pbar:
 
         # --- Train ---
         model.train()
@@ -82,11 +95,18 @@ def train(model, train_dataloader, val_dataloader, learning_rate, epochs):
         avg_val_loss = total_loss_val / len(val_dataloader)
         val_acc = total_acc_val / total_examples_val
 
-        print(
-            f"Epoch {epoch+1:03d} | "
-            f"Train Loss: {avg_train_loss:.3f} | Train Acc: {train_acc:.3f} |"
-            f"Val Loss: {avg_val_loss:.3f} | Val Acc: {val_acc:.3f}"
-        )
+        history["train_loss"].append(avg_train_loss)
+        history["val_loss"].append(avg_val_loss)
+        history["train_acc"].append(train_acc)
+        history["val_acc"].append(val_acc)
+
+        pbar.set_postfix({
+            "TrainLoss": f"{avg_train_loss:.3f}",
+            "TrainAcc": f"{train_acc:.3f}",
+            "ValLoss": f"{avg_val_loss:.3f}",
+            "ValAcc": f"{val_acc:.3f}",
+        })
+
 
 def evaluate(model, test_dataloader):
 
@@ -117,6 +137,6 @@ def evaluate(model, test_dataloader):
     all_probs = np.concatenate(all_probs)
     all_labels = np.concatenate(all_labels)
 
-    print(f'Evaluation Accuracy: {accuracy_score(all_labels, all_preds):.4f}')
-    print(f'Evaluation Roc Auc Score: {roc_auc_score(all_labels, all_probs, multi_class='ovr')}')
-    print(f'Evaluation F1 Score: {f1_score(all_labels, all_preds, average="weighted"):.4f}')
+    print(f'Test Accuracy: {accuracy_score(all_labels, all_preds):.4f}')
+    print(f'Test Roc Auc Score: {roc_auc_score(all_labels, all_probs, multi_class='ovr')}')
+    print(f'Test F1 Score: {f1_score(all_labels, all_preds, average="weighted"):.4f}')

@@ -69,15 +69,16 @@ y_val_pred = clf.predict(X_val)
 print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
 
 y_test_pred = clf.predict(X_test)
-print(f'Evaluation Accuracy: {accuracy_score(y_test, y_test_pred)}')
-print(f'Evaluation Roc Auc Score: {roc_auc_score(y_test, clf.predict_proba(X_test), multi_class='ovr')}')
-print(f'Evaluation F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
+print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
+print(f'Test Roc Auc Score: {roc_auc_score(y_test, clf.predict_proba(X_test), multi_class='ovr')}')
+print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
 
 #####################################
 # -----      Pytorch NN       ----- #
 #####################################
 from TF_IDF_torch_clf import *
 from torch.utils.data import TensorDataset, DataLoader
+import matplotlib.pyplot as plt
 
 np.random.seed(42)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -100,10 +101,34 @@ train_loader = DataLoader(TensorDataset(X_train_t, y_train_t), batch_size=batch_
 val_loader = DataLoader(TensorDataset(X_val_t, y_val_t), batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(TensorDataset(X_test_t, y_test_t), batch_size=batch_size, shuffle=True)
 
-EPOCHS = 3000
+epochs = 3000
 model = tfidfClassifier(max_features)
 LR = 5e-6
+print("PYTORCH NN")
+train(model, train_loader, val_loader, LR, epochs)
+epochs = range(1, len(history["train_loss"]) + 1)
 
-train(model, train_loader, val_loader, LR, EPOCHS)
+plt.figure(figsize=(12, 5))
+
+# ---- LOSS CURVE ----
+plt.subplot(1, 2, 1)
+plt.plot(epochs, history["train_loss"], label="Train Loss")
+plt.plot(epochs, history["val_loss"], label="Val Loss")
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.title("Training vs Validation Loss")
+plt.legend()
+
+# ---- ACCURACY CURVE ----
+plt.subplot(1, 2, 2)
+plt.plot(epochs, history["train_acc"], label="Train Acc")
+plt.plot(epochs, history["val_acc"], label="Val Acc")
+plt.xlabel("Epoch")
+plt.ylabel("Accuracy")
+plt.title("Training vs Validation Accuracy")
+plt.legend()
+
+plt.tight_layout()
+plt.show()
 
 evaluate(model, test_loader)
