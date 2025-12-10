@@ -31,20 +31,20 @@ X_w2v = np.array([tweet_vector(tweet_tokens,model_w2v) for tweet_tokens in token
 # -----   Scikit-learn ALG    ----- #
 #####################################
 
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.calibration import CalibratedClassifierCV
 from sklearn.model_selection import train_test_split 
 from sklearn.metrics import classification_report, accuracy_score, roc_auc_score, f1_score
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-
-######## Logistic Regression ########
-
-from sklearn.linear_model import LogisticRegression
 
 # Label array ('True', 'False', 'Unverified')
 Y = pheme_df['target'].values
 
 # Label Encoding ('True' -> 0, 'False' -> 1, 'Unverified' -> 2)
 label_encoder = LabelEncoder()
-Y_encoded = label_encoder.fit_transform(Y)
+Y_encoded = label_encoder.fit_transform(Y) #type:ignore
 
 # 60% -> Training dataset, 40% -> Test/validation datasets
 X_train,X_temp,y_train,y_temp = train_test_split(X_w2v,Y_encoded,
@@ -60,136 +60,109 @@ X_train = scaler.fit_transform(X_train)
 X_val = scaler.transform(X_val)
 X_test = scaler.transform(X_test)
 
-print("Scikit - Datasets size")
-print("Train:", X_train.shape, "\nVal:", X_val.shape, "\nTest:", X_test.shape)
+print('\n'+'### ---  Logistic Regression --- ###' + '\n')
 
-# Multiclass Logistic Regression model
-log_reg = LogisticRegression(solver="lbfgs",class_weight="balanced",max_iter=100)
+clf = LogisticRegression(solver="lbfgs",class_weight="balanced",max_iter=300)
+clf.fit(X_train, y_train)
+y_val_pred = clf.predict(X_val)
 
-# Model training with training dataset (X_train,y_train)
-log_reg.fit(X_train,y_train)
-
-# Validation report over validation dataset (X_val,y_val)
-y_val_pred = log_reg.predict(X_val)
-print("Validation report (LogReg on W2V embeddings):")
-print(classification_report(y_val, y_val_pred))
 print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
 
-# Final evaluation over test dataset (X_test,y_test)
-y_test_pred = log_reg.predict(X_test)
-print("Test report (LogReg on W2V embeddings):")
-print(classification_report(y_test, y_test_pred))
-print("Test Accuracy:", accuracy_score(y_test, y_test_pred))
-print("Test Roc Auc Score: ", roc_auc_score(y_test, log_reg.predict_proba(X_test), multi_class='ovr'))
-print("Test F1 Score: ", f1_score(y_test, y_test_pred, average='micro'))
+y_test_pred = clf.predict(X_test)
+print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
+print(f'Test Roc Auc Score: {roc_auc_score(y_test, clf.predict_proba(X_test), multi_class='ovr')}')
+print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
 
-################ SVM ################
+print('\n' + '### --- SVM Classifier --- ###' + '\n')
 
-from sklearn.svm import LinearSVC
-from sklearn.calibration import CalibratedClassifierCV
-
-# SVM model
 Lclas = LinearSVC()
-
-# Model training with training dataset (X_train,y_train)
 clf = CalibratedClassifierCV(Lclas).fit(X_train, y_train)
+y_val_pred = clf.predict(X_val)
 
-# Validation report over validation dataset (X_val,y_val)
-y_val_pred_svm = clf.predict(X_val)
-print("Validation report (SVM on W2V embeddings):")
-print(classification_report(y_val, y_val_pred_svm))
-print("Validation Accuracy:", accuracy_score(y_val, y_val_pred_svm))
+print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
 
-# Final evaluation over test dataset (X_test,y_test)
-y_test_pred_svm = clf.predict(X_test)
-print("Test report (SVM on W2V embeddings):")
-print(classification_report(y_test, y_test_pred_svm))
-print("Test Accuracy:", accuracy_score(y_test, y_test_pred_svm))
-print("Test Roc Auc Score: ", roc_auc_score(y_test, clf.predict_proba(X_test), multi_class='ovr'))
-print("Test F1 Score: ", f1_score(y_test, y_test_pred_svm, average='micro'))
+y_test_pred = clf.predict(X_test)
+print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
+print(f'Test Roc Auc Score: {roc_auc_score(y_test, clf.predict_proba(X_test), multi_class='ovr')}')
+print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
 
-########### Random Forest ###########
+print('\n'+'### ---  Random Forest Classification --- ###' + '\n')
 
-from sklearn.ensemble import RandomForestClassifier
+rf = RandomForestClassifier(
+    n_estimators=300,
+    max_depth=None,
+    random_state=42,
+    n_jobs=-1
+).fit(X_train, y_train)
 
-# Random Forest model
-rf_clf = RandomForestClassifier(n_estimators=300, max_depth=None, min_samples_split=2,
-      min_samples_leaf=1, class_weight='balanced_subsample', n_jobs=-1, random_state=42)
+y_val_pred = rf.predict(X_val)
 
-# Model training with training dataset (X_train,y_train)
-rf_clf.fit(X_train, y_train)
+print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
 
-# Validation report over validation dataset (X_val,y_val)
-y_val_pred_rf = rf_clf.predict(X_val)
-print("Validation report (Random Forest on W2V embeddings):")
-print(classification_report(y_val, y_val_pred_rf))
-print("Validation Accuracy:", accuracy_score(y_val, y_val_pred_rf))
+y_test_pred = rf.predict(X_test)
+y_test_proba = rf.predict_proba(X_test)
 
-# Final evaluation over test dataset (X_test,y_test)
-y_test_pred_rf = rf_clf.predict(X_test)
-print("Test report (Random Forest on W2V embeddings):")
-print(classification_report(y_test, y_test_pred_rf))
-print("Test Accuracy:", accuracy_score(y_test, y_test_pred_rf))
-print("Test Roc Auc Score: ", roc_auc_score(y_test, clf.predict_proba(X_test), multi_class='ovr'))
-print("Test F1 Score: ", f1_score(y_test, y_test_pred_rf, average='micro'))
+print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
+print(f"ROC AUC Score for test SET: {roc_auc_score(y_test, y_test_proba, multi_class='ovr')}")
+print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
 
-##########################################
-# -----   PyTorch NN CLASSIFIER    ----- #
-##########################################
-
-import torch
-from torch import nn
-from torch.optim import Adam
-from torch.utils.data import TensorDataset, DataLoader
+#####################################
+# -----      Pytorch NN       ----- #
+#####################################
 from W2V_torch_clf import *
+from torch.utils.data import TensorDataset, DataLoader
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 
-# 60% -> Training dataset, 40% -> Test/validation datasets
-X_train_nn,X_temp_nn,y_train_nn,y_temp_nn = train_test_split(X_w2v,Y_encoded,test_size=0.4,random_state=42,stratify=Y_encoded) #type: ignore
-
-# Split test/validation dataset 50/50 (20% -> Test dataset, 20% -> Validation dataset)
-X_val_nn,X_test_nn,y_val_nn,y_test_nn = train_test_split(X_temp_nn,y_temp_nn,test_size=0.5,random_state=42,stratify=y_temp_nn)
-
-print("PyTorch NN - Datasets size")
-print("Train:", X_train_nn.shape, "\nVal:", X_val_nn.shape, "\nTest:", X_test_nn.shape)
-
-# Standarize datasets
+np.random.seed(42)
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+#Normalize inputs for better performance
 scaler = StandardScaler()
-X_train_nn = scaler.fit_transform(X_train_nn)
-X_val_nn = scaler.transform(X_val_nn)
-X_test_nn = scaler.transform(X_test_nn)
+X_train = scaler.fit_transform(X_train)
+X_val = scaler.fit_transform(X_val)
+X_test = scaler.fit_transform(X_test)
 
-# CPU / GPU processing
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print("Using device: ", device)
+X_train_t = torch.tensor(X_train, dtype=torch.float32, device=device)
+y_train_t = torch.tensor(y_train, dtype=torch.long, device=device)
+X_val_t = torch.tensor(X_val, dtype=torch.float32)
+y_val_t = torch.tensor(y_val, dtype=torch.long)
+X_test_t = torch.tensor(X_test, dtype=torch.float32)
+y_test_t = torch.tensor(y_test, dtype=torch.long)
 
-# PyTorch tensors
-X_train_t = torch.tensor(X_train_nn,dtype=torch.float32)
-y_train_t = torch.tensor(y_train_nn,dtype=torch.long)
+train_loader = DataLoader(TensorDataset(X_train_t, y_train_t), batch_size=64, shuffle=True)
+val_loader = DataLoader(TensorDataset(X_val_t, y_val_t), batch_size=64, shuffle=True)
+test_loader = DataLoader(TensorDataset(X_test_t, y_test_t), batch_size=64, shuffle=True)
 
-X_val_t = torch.tensor(X_val_nn,dtype=torch.float32)
-y_val_t = torch.tensor(y_val_nn,dtype=torch.long)
+epochs = 500
+model = Word2VecClassifier(input_dim=X_w2v.shape[1], 
+                           num_classes=len(label_encoder.classes_))
+LR = 5e-4
+print('\n'+'### ---  PYTORCH NN --- ###' + '\n')
+train(model, train_loader, val_loader, LR, epochs)
+epochs = range(1, len(history["train_loss"]) + 1)
 
-X_test_t = torch.tensor(X_test_nn,dtype=torch.float32)
-y_test_t = torch.tensor(y_test_nn,dtype=torch.long)
+plt.figure(figsize=(12, 5))
 
-# Data Loaders
-batch_size = 64
+# ---- LOSS CURVE ----
+plt.subplot(1, 2, 1)
+plt.plot(epochs, history["train_loss"], label="Train Loss")
+plt.plot(epochs, history["val_loss"], label="Val Loss")
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.title("Training vs Validation Loss")
+plt.legend()
 
-train_loader = DataLoader(TensorDataset(X_train_t,y_train_t),
-                          batch_size=batch_size,shuffle=True)
+# ---- ACCURACY CURVE ----
+plt.subplot(1, 2, 2)
+plt.plot(epochs, history["train_acc"], label="Train Acc")
+plt.plot(epochs, history["val_acc"], label="Val Acc")
+plt.xlabel("Epoch")
+plt.ylabel("Accuracy")
+plt.title("Training vs Validation Accuracy")
+plt.legend()
 
-val_loader = DataLoader(TensorDataset(X_val_t,y_val_t),
-                        batch_size=batch_size,shuffle=False)
+plt.tight_layout()
+plt.savefig('W2V_NN_trainig.png')
+plt.show()
 
-test_loader = DataLoader(TensorDataset(X_test_t,y_test_t),
-                         batch_size=batch_size,shuffle=False)
-
-# Model training
-EPOCHS = 500
-LR = 1e-3
-w2v_model = Word2VecClassifier(input_dim=X_w2v.shape[1], 
-                               num_classes=len(label_encoder.classes_))
-train(w2v_model, train_loader, val_loader, learning_rate=LR, epochs=EPOCHS)
-
-# Model evaluation
-evaluate(w2v_model, test_loader)
+evaluate(model, test_loader)

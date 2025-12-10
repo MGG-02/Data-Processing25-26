@@ -1,5 +1,8 @@
 import torch
+import numpy as np
 from torch import nn
+from tqdm import trange
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
 from torch.optim import Adam
 
 #1 Hidden layer in order to create loss
@@ -10,11 +13,11 @@ class Word2VecClassifier(nn.Module):
         self.net = nn.Sequential(
             nn.LayerNorm(input_dim),
             nn.Linear(input_dim, 128),
-            nn.GELU(),
+            nn.PReLU(),
             nn.Dropout(dropout),
 
             nn.Linear(128, 64),
-            nn.GELU(),
+            nn.PReLU(),
             nn.Dropout(dropout/2),
 
             nn.Linear(64, num_classes)
@@ -22,9 +25,17 @@ class Word2VecClassifier(nn.Module):
 
     def forward(self, x):
         return self.net(x)
-    
+
+history = {
+    "train_loss": [],
+    "val_loss": [],
+    "train_acc": [],
+    "val_acc": []
+}
+
 def train(model, train_dataloader, val_dataloader, learning_rate, epochs):
 
+    pbar = trange(epochs, desc="Training")
     # CPU / GPU processing
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
@@ -32,7 +43,7 @@ def train(model, train_dataloader, val_dataloader, learning_rate, epochs):
     criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
     optimizer = Adam(model.parameters(), lr= learning_rate, weight_decay=1e-4)
 
-    for epoch in range(epochs):
+    for epoch in pbar:
 
         # --- Train ---
         model.train()
@@ -80,11 +91,17 @@ def train(model, train_dataloader, val_dataloader, learning_rate, epochs):
         avg_val_loss = total_loss_val / len(val_dataloader)
         val_acc = total_acc_val / total_examples_val
 
-        print(
-            f"Epoch {epoch+1:03d} | "
-            f"Train Loss: {avg_train_loss:.3f} | Train Acc: {train_acc:.3f} |"
-            f"Val Loss: {avg_val_loss:.3f} | Val Acc: {val_acc:.3f}"
-        )
+        history["train_loss"].append(avg_train_loss)
+        history["val_loss"].append(avg_val_loss)
+        history["train_acc"].append(train_acc)
+        history["val_acc"].append(val_acc)
+
+        pbar.set_postfix({
+            "TrainLoss": f"{avg_train_loss:.3f}",
+            "TrainAcc": f"{train_acc:.3f}",
+            "ValLoss": f"{avg_val_loss:.3f}",
+            "ValAcc": f"{val_acc:.3f}",
+        })
 
 def evaluate(model, test_dataloader):
 
@@ -93,11 +110,9 @@ def evaluate(model, test_dataloader):
     model.to(device)
     model.eval()
 
-    total_acc_test = 0
-    total_examples_test = 0
-
     all_preds = []
     all_labels = []
+    all_probs = []
 
     with torch.no_grad():
         for test_input, test_label in test_dataloader:
@@ -105,13 +120,18 @@ def evaluate(model, test_dataloader):
             test_label = test_label.to(device)
 
             outputs = model(test_input)
-            
+            probs = torch.softmax(outputs, dim=1)
             preds = outputs.argmax(dim=1)
-            total_acc_test += (preds == test_label).sum().item()
-            total_examples_test += test_label.size(0)
 
             all_preds.append(preds.cpu().numpy())
             all_labels.append(test_label.cpu().numpy())
+            all_probs.append(probs.cpu().numpy())
 
-        test_acc = total_acc_test / total_examples_test
-        print(f"Test Accuracy: {test_acc:.3f}")            
+
+    all_preds = np.concatenate(all_preds)
+    all_probs = np.concatenate(all_probs)
+    all_labels = np.concatenate(all_labels)
+
+    print(f'Test Accuracy: {accuracy_score(all_labels, all_preds):.4f}')
+    print(f'Test Roc Auc Score: {roc_auc_score(all_labels, all_probs, multi_class='ovr')}')
+    print(f'Test F1 Score: {f1_score(all_labels, all_preds, average="weighted"):.4f}')    
