@@ -125,7 +125,10 @@ To end up with the advantages of NN, Pytorch provides GPU acceleration, meaning 
 
 Architecture:
 
-![Project Logo](images/NN-1.png)
+<p align="center">
+  <img src="images/NN-1.png" alt="Neural Network" width="400" height="300">
+</p>
+
 
 ### References
 <a id="1">[1]</a> 
