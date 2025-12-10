@@ -14,17 +14,6 @@ class tfidfClassifier(nn.Module):
             nn.Linear(input_dim, hidden_dim),
             nn.Dropout(dropout),
             nn.Linear(hidden_dim, num_classes)
-
-            # nn.LayerNorm(input_dim),
-            # nn.Linear(input_dim, 128),
-            # nn.GELU(),
-            # nn.Dropout(dropout),
-
-            # nn.Linear(128, 64),
-            # nn.GELU(),
-            # nn.Dropout(dropout/2),
-
-            # nn.Linear(64, num_classes)
         ) 
 
     def forward(self, x):
