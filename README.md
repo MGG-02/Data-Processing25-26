@@ -78,6 +78,12 @@ $$TF = \frac{BoW (w, d)}{\text{nº words in d}} \space \space ; \space \space ID
 
 $$TF-IDF = TF(w,d) \times IDF (w)$$
 
+<p align="center">
+  <img src="images/tf-idf.png" alt="" width="600" height="400">
+  <br>
+  <em>Figure 1: TF-IDF Vectorization Example</em>
+</p>
+
 The main purpouse for TF-IDF vectorization is counting words and deciding weather a word is more or less important in order to detect the topic/sentimient/etc.
 
 ### **B) Word2Vec**
@@ -95,7 +101,11 @@ However, Word2Vec embeddings are static and do not model word sense or sentence-
 ### **C) Transformer-Based Embeddings**
 **BERT** Embeddings: The previous text vectorization techniques are unable to capture context in the sentences, this is why, the last vectorization used is BERT. BERT (_Bidirectional Encoder Representations from Transformers_) is a pretrained language model that uses bidirectional context to enhance performance on natural language processing tasks.[[2]](#2)
 
-![Project Logo](images/bert-embedding-layer.png)
+<p align="center">
+  <img src="images/bert-embedding-layer.png" alt="" width="600" height="400">
+  <br>
+  <em>Figure 2: Example on how BERT Embedding layer tokenize text</em>
+</p>
 
 Because BERT captures nuanced semantic and emotional signals, it is particularly well-suited for detecting disinformation patterns and ideological polarization in social media posts.
 
@@ -135,6 +145,8 @@ Architecture:
 
 <p align="center">
   <img src="images/NN-1.png" alt="Neural Network" width="400" height="300">
+  <br>
+  <em>Figure 3: Pytorch NN for Classification via TF-IDF Vectorization</em>
 </p>
 
 
