@@ -47,7 +47,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, accuracy_score, roc_auc_score, f1_score
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
 
 X = X_tfidf_df.values
 Y = pheme_df['target']
@@ -166,6 +166,7 @@ plt.title("Training vs Validation Accuracy")
 plt.legend()
 
 plt.tight_layout()
+plt.savefig('TF-IDF_NN_trainig.png')
 plt.show()
 
 evaluate(model, test_loader)

@@ -83,8 +83,13 @@ Y = pheme_df['target'].values
 # -----   Scikit-learn ALG    ----- #
 #####################################
 
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
 
 le = LabelEncoder()
 Y = le.fit_transform(Y)     #type: ignore
@@ -100,32 +105,52 @@ X_trainval, X_test, y_trainval, y_test = train_test_split(
 X_train, X_val, y_train, y_val = train_test_split(
     X_trainval, y_trainval, test_size=0.25, random_state=42, stratify=y_trainval)
 
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report
-from sklearn.metrics import roc_auc_score
+print('\n'+'### ---  Logistic Regression --- ###' + '\n')
 
-reg = LogisticRegression(max_iter=10000)
-reg.fit(X_train, y_train)
+clf = LogisticRegression(solver="lbfgs",class_weight="balanced",max_iter=300)
+clf.fit(X_train, y_train)
+y_val_pred = clf.predict(X_val)
 
-y_val_pred = reg.predict(X_val)
-y_val_proba = reg.predict_proba(X_val)
-report_dict = classification_report(y_val, y_val_pred, output_dict=True)
+print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
 
-report_df = pd.DataFrame(report_dict).transpose() #Just for visualization
+y_test_pred = clf.predict(X_test)
+print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
+print(f'Test Roc Auc Score: {roc_auc_score(y_test, clf.predict_proba(X_test), multi_class='ovr')}')
+print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
 
-print("Validation report (LogReg on BERT embeddings):")
-print(tabulate(report_df, headers="keys", tablefmt="fancy_grid", floatfmt=".3f"))           #type:ignore
+print('\n' + '### --- SVM Classifier --- ###' + '\n')
 
-# Final eval on test set
-y_test_pred = reg.predict(X_test)
-y_test_proba = reg.predict_proba(X_test)
-report_dict = classification_report(y_test, y_test_pred, output_dict=True)
+Lclas = LinearSVC()
+clf = CalibratedClassifierCV(Lclas).fit(X_train, y_train)
+y_val_pred = clf.predict(X_val)
 
-report_df = pd.DataFrame(report_dict).transpose() #Just for visualization
+print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
 
-print("Test report (LogReg on BERT embeddings):")
-print(tabulate(report_df, headers="keys", tablefmt="fancy_grid", floatfmt=".3f"))                   #type:ignore
-print(f'ROC AUC Score for test SET: {roc_auc_score(y_test, y_test_proba, multi_class='ovr')}')
+y_test_pred = clf.predict(X_test)
+print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
+print(f'Test Roc Auc Score: {roc_auc_score(y_test, clf.predict_proba(X_test), multi_class='ovr')}')
+print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
+
+print('\n'+'### ---  Random Forest Classification --- ###' + '\n')
+
+rf = RandomForestClassifier(
+    n_estimators=300,
+    max_depth=None,
+    random_state=42,
+    n_jobs=-1
+).fit(X_train, y_train)
+
+y_val_pred = rf.predict(X_val)
+
+print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
+
+y_test_pred = rf.predict(X_test)
+y_test_proba = rf.predict_proba(X_test)
+
+print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
+print(f"ROC AUC Score for test SET: {roc_auc_score(y_test, y_test_proba, multi_class='ovr')}")
+print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
+
 
 
 #####################################
@@ -134,6 +159,7 @@ print(f'ROC AUC Score for test SET: {roc_auc_score(y_test, y_test_proba, multi_c
 from BERT_torch_clf import *
 from torch.utils.data import TensorDataset, DataLoader
 from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 
 np.random.seed(42)
 
@@ -154,10 +180,35 @@ train_loader = DataLoader(TensorDataset(X_train_t, y_train_t), batch_size=64, sh
 val_loader = DataLoader(TensorDataset(X_val_t, y_val_t), batch_size=64, shuffle=True)
 test_loader = DataLoader(TensorDataset(X_test_t, y_test_t), batch_size=64, shuffle=True)
 
-EPOCHS = 300
+epochs = 500
 model = BertClassifier()
 LR = 5e-6
+print('\n'+'### ---  PYTORCH NN --- ###' + '\n')
+train(model, train_loader, val_loader, LR, epochs)
+epochs = range(1, len(history["train_loss"]) + 1)
 
-train(model, train_loader, val_loader, LR, EPOCHS)
+plt.figure(figsize=(12, 5))
+
+# ---- LOSS CURVE ----
+plt.subplot(1, 2, 1)
+plt.plot(epochs, history["train_loss"], label="Train Loss")
+plt.plot(epochs, history["val_loss"], label="Val Loss")
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.title("Training vs Validation Loss")
+plt.legend()
+
+# ---- ACCURACY CURVE ----
+plt.subplot(1, 2, 2)
+plt.plot(epochs, history["train_acc"], label="Train Acc")
+plt.plot(epochs, history["val_acc"], label="Val Acc")
+plt.xlabel("Epoch")
+plt.ylabel("Accuracy")
+plt.title("Training vs Validation Accuracy")
+plt.legend()
+
+plt.tight_layout()
+plt.savefig('BERT_NN_trainig.png')
+plt.show()
 
 evaluate(model, test_loader)
