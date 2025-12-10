@@ -78,6 +78,12 @@ $$TF = \frac{BoW (w, d)}{\text{nº words in d}} \space \space ; \space \space ID
 
 $$TF-IDF = TF(w,d) \times IDF (w)$$
 
+<p align="center">
+  <img src="images/tf-idf.png" alt="" width="600" height="400">
+  <br>
+  <em>Figure 1: TF-IDF Vectorization Example</em>
+</p>
+
 The main purpouse for TF-IDF vectorization is counting words and deciding weather a word is more or less important in order to detect the topic/sentimient/etc.
 
 ### **B) Word2Vec**
@@ -87,7 +93,13 @@ The main purpouse for TF-IDF vectorization is counting words and deciding weathe
 ### **C) Transformer-Based Embeddings**
 **BERT** Embeddings: The previous text vectorization techniques are unable to capture context in the sentences, this is why, the last vectorization used is BERT. BERT (_Bidirectional Encoder Representations from Transformers_) is a pretrained language model that uses bidirectional context to enhance performance on natural language processing tasks.[[2]](#2)
 
-![Project Logo](images/bert-embedding-layer.png)
+![Project Logo]()
+
+<p align="center">
+  <img src="images/bert-embedding-layer.png" alt="" width="600" height="400">
+  <br>
+  <em>Figure 2: Example on how BERT Embedding layer tokenize text</em>
+</p>
 
 Because BERT captures nuanced semantic and emotional signals, it is particularly well-suited for detecting disinformation patterns and ideological polarization in social media posts.
 
@@ -123,12 +135,15 @@ Another advantage of NN is the high customization of the model, where dimension 
 
 To end up with the advantages of NN, Pytorch provides GPU acceleration, meaning that the created model can be tranfered to the GPU to increase training, validation and test speed.
 
+## **TF-IDF Pytorch NN**
+
 Architecture:
 
 <p align="center">
   <img src="images/NN-1.png" alt="Neural Network" width="400" height="300">
+   <br>
+  <em>Figure 3: Pytorch NN for Classification via TF-IDF Vectorization</em>
 </p>
-
 
 ### References
 <a id="1">[1]</a> 
