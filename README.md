@@ -88,7 +88,13 @@ The main purpouse for TF-IDF vectorization is counting words and deciding weathe
 
 ### **B) Word2Vec**
 
-_Word2Vec_ is a neural embedding model that learns dense, low-dimensional vectors for each word by predicting its surrounding context (skip-gram) or by predicting the word fromits context (CBOW). 
+_Word2Vec_ is a neural embedding model that learns dense, low-dimensional vectors for each word by predicting its surrounding context (skip-gram) or by predicting the word from its context (CBOW). 
+
+<p align="center">
+  <img src="images/w2v.png" alt="" width="600" height="400">
+  <br>
+  <em>Figure 2: Functional schemes for CBOW and Skip-gram Word2Vec models</em>
+</p>
 
 To obtain a fixed-size representation for each tweet, the **average of all word embeddings** is computed, compressing the lexical content into a dense embedding that:
 
@@ -104,7 +110,7 @@ However, Word2Vec embeddings are static and do not model word sense or sentence-
 <p align="center">
   <img src="images/bert-embedding-layer.png" alt="" width="600" height="400">
   <br>
-  <em>Figure 2: Example on how BERT Embedding layer tokenize text</em>
+  <em>Figure 3: Example on how BERT Embedding layer tokenize text</em>
 </p>
 
 Because BERT captures nuanced semantic and emotional signals, it is particularly well-suited for detecting disinformation patterns and ideological polarization in social media posts.
@@ -133,27 +139,6 @@ In order to create models able to classify weather a Tweet is _True_, _False_ or
 | **SVM** | **Linear**/Nonlinear | Yes (with kernels) | Strong performance, robust to outliers | Slow on large datasets, requires tuning | High-dimensional features (especially linear kernel) |
 | **Random Forest** | Tree Ensemble | Yes | Captures complex patterns, robust to noise, feature importance | Weak on dense high-dimensional embeddings, can overfit | Tabular data or sparse text vectors |
 
-| Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
-|-----------------------|---------------------|-----|---------------|------------|
-| **TF-IDF** | 0.8338 | ***0.8643*** | 0.8366 | 0.8310 |
-| **Word2Vec** | 0.7173 | 0.7422 | 0.7713 | ***0.7838*** |
-| **BERT** | 0.7089 | 0.7339 | 0.7672 | ***0.7692*** |
-
-| Model \ Vectorization | TF-IDF | Word2Vec | BERT |
-|-----------------------|--------|----------|------|
-| **Logistic Regression** | ***0.8338*** | 0.7173 | 0.7089 |
-| **SVM** | **0.8643** | 0.7422 | 0.7339 |
-| **Random Forest** | ***0.8366*** | 0.7713 | 0.7672 |
-| **PyTorch NN** | ***0.8310*** | 0.7838 | 0.7692 |
-
-### TF-IDF Neural Network (PyTorch)
-
-| Layer | Output shape | Activation | Dropout |
-|-------|--------------|------------|---------|
-| Input (TF-IDF) | [batch_size, 1000] | – | – |
-| Hidden Layer 1 | [batch_size, 128] | (lineal)  | 0.5 |
-| Output Layer | [batch_size, 3] | (logits)  | – |
-
 ### **PyTorch Neural Network**
 
 To explore different ways of Tweet classification/Spread of desinformation, a Pytorch Neural Network has been created. Neural Networks (**NN**) can learn nonlinear relationships that scikit-learn models struggle with. This is usefull when working with text representation via embeddings, where context vectors dimentions are complex.
@@ -162,14 +147,116 @@ Another advantage of NN is the high customization of the model, where dimension 
 
 To end up with the advantages of NN, Pytorch provides GPU acceleration, meaning that the created model can be tranfered to the GPU to increase training, validation and test speed.
 
-Architecture:
+For each vectorization technique, the following neural network configurations have been used.
+
+#### **TF-IDF vectorization**
 
 <p align="center">
-  <img src="images/NN-1.png" alt="Neural Network" width="400" height="300">
+  <img src="images/NN-TF-IDF.JPG" alt="Neural Network" width="400" height="300">
   <br>
-  <em>Figure 3: Pytorch NN for Classification via TF-IDF Vectorization</em>
+  <em>Figure 4: Pytorch NN for Classification via TF-IDF Vectorization</em>
 </p>
 
+#### **Word2Vec vectorization**
+
+<p align="center">
+  <img src="images/NN-W2V.JPG" alt="Neural Network" width="400" height="300">
+  <br>
+  <em>Figure 5: Pytorch NN for Classification via Word2Vec Vectorization</em>
+</p>
+
+#### **BERT vectorization**
+
+<p align="center">
+  <img src="images/NN-BERT.JPG" alt="Neural Network" width="400" height="300">
+  <br>
+  <em>Figure 6: Pytorch NN for Classification via BERT Vectorization</em>
+</p>
+
+## 4. Results
+
+### Accuracy
+
+**Accuracy** metric in classification models can be defined basically as the ratio between the hits and the complete set of examples in the predictions made, as shown in the expression below.
+
+$$ Accuracy = \frac{TP + TN}{TP+TN+FP+FN} $$
+
+Where TP is the true positives, TN is the true negatives, FP is the false positives and FN is the false negatives. The accuracy results obtained for each model and vectorization configurations can be observed in the tables below.
+
+| Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
+|-----------------------|---------------------|-----|---------------|------------|
+| **TF-IDF** | 0.8338 | ***0.8643*** | 0.8366 | 0.8310 |
+| **Word2Vec** | 0.7173 | 0.7422 | 0.7713 | ***0.7838*** |
+| **BERT** | 0.7089 | 0.7339 | 0.7672 | ***0.7692*** |
+
+Focusing on the performance of every classification model for each text vectorization method (rows of the above table), there is a very slight difference between the results, being different models the most adequated for each vectorization technique. This means that the performance of each configuration does not have a strong dependency on the classification model used. In addition, an accuracy of 70% to 87% has been achieved for all the cases, considering the configuration of the parameters used for each case moderately good.
+
+| Model \ Vectorization | TF-IDF | Word2Vec | BERT |
+|-----------------------|--------|----------|------|
+| **Logistic Regression** | ***0.8338*** | 0.7173 | 0.7089 |
+| **SVM** | **0.8643** | 0.7422 | 0.7339 |
+| **Random Forest** | ***0.8366*** | 0.7713 | 0.7672 |
+| **PyTorch NN** | ***0.8310*** | 0.7838 | 0.7692 |
+
+On the other hand, there is a clear difference in performance when focusing on the vectorization technique used for each classification model, being the indisputable winner the TF-IDF method with a difference of around 10% with the other techniques. The particular case that has thrown the best result is the **TF-IF vectorization and SVM classification model**.
+
+### F1 score
+
+*F1 score* metric, also known as balanced F-socre, can be interpreted as the harmonic mean of *precision* (percetnage of the predicted positives which are correct) and *recall* (percentage of the correctly predicted positives over all the possible positives). It is computed as shown below.
+
+$$F1 = \frac{2*TP}{2*TP + FP + FN}$$
+
+Where *TP* is the number of true positives, *FP* is the number of false positives and *FN* is the number of false negatives. F1 value oscillates between 0 and 1, being the fist vale the worst case, and the last one the best case. It is a more reliable metric than the accuracy when the dataset used is strongly unbalanced, stablishing a compromise between getting false positives and loosing real positives.
+
+Based on this metric, it is also possible to do a comparison between the performance por each classification model and text vectorization methods combined.
+
+| Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
+|-----------------------|---------------------|-----|---------------|------------|
+| **TF-IDF** | 0.8338 | ***0.8643*** | 0.8366 | 0.8308 |
+| **Word2Vec** | 0.7173 | 0.7422 | 0.7713 | ***0.7823*** |
+| **BERT** | 0.7089 | 0.7339 | ***0.7672*** | 0.7664 |
+
+(Explain)
+
+| Model \ Vectorization | TF-IDF | Word2Vec | BERT |
+|-----------------------|--------|----------|------|
+| **Logistic Regression** | ***0.8338*** | 0.7173 | 0.7089 |
+| **SVM** | **0.8643** | 0.7422 | 0.7339 |
+| **Random Forest** | ***0.8366*** | 0.7713 | 0.7672 |
+| **PyTorch NN** | ***0.8308*** | 0.7823 | 0.7664 |
+
+(Explain)
+
+
+### ROC-AUC score
+*ROC-AUC* or Area Under the Receiver Operating Characteristic Curve evaluates the goodness of each model across the full spectrum of thresholds. More precisely, it is also a number between 0 and 1 that represents the area under the ROC curve that plots the true positive rate (TPR) against the false positive rate (FPR) for all possible decision thresholds, giving this way the probability that the model assigns a higher score to a randomly chosen positive example than to a randomly chosen negative one [[3]](#3). 
+
+An example of the measure of this metric is given in the figure observed below, in which the area of the ROC  curve (orange one) represents the performance of a model for all the possible true and false possitive ratios.
+
+<p align="center">
+  <img src="images/ROCAUC.png" alt="Neural Network" width="400" height="300">
+  <br>
+  <em>Figure 7: ROC curve for a logistic regression model.</em>
+</p>
+
+The same comparison will be made for the classification models and vectorization techniques based on this metric. The results are shown in the tables below.
+
+| Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
+|-----------------------|---------------------|-----|---------------|------------|
+| **TF-IDF** | 0.9440 | ***0.9552*** | 0.9530 | 0.9313 |
+| **Word2Vec** | 0.8785 | 0.8852 | 0.8934 | ***0.9190*** |
+| **BERT** | 0.8786 | 0.8729 | 0.9034 | ***0.9118*** |
+
+Again, the same conclusion can be made for the classification models used for each vectorization method, the results are not biased enough to make a clear decision in which one is the best. However, for Word2Vec and BERT vectorization technics, both based on word embeddings, the PyTorch neural network seems to throw better results than the TF-IDF one.
+
+| Model \ Vectorization | TF-IDF | Word2Vec | BERT |
+|-----------------------|--------|----------|------|
+| **Logistic Regression** | ***0.9440*** | 0.8785 | 0.8786 |
+| **SVM** | **0.9552** | 0.8852 | 0.8729 |
+| **Random Forest** | ***0.9530*** | 0.8934 | 0.9034 |
+| **PyTorch NN** | ***0.9313*** | 0.9190 | 0.9118 |
+
+Tf-IDF is also clearly the most performative vectorization technique, giving a top ROC-AUC value of around 95% for every classification method used.
 
 ### References
 <a id="1">[1]</a> 
@@ -178,6 +265,17 @@ PHEME dataset for Rumour Detection and Veracity Classification. figshare.
 [Dataset](https://doi.org/10.6084/m9.figshare.6392078.v1)
 
 <a id="2">[2]</a> 
-David Liang (2024)
-Intro — Getting Started with Text Embeddings: Using BERT
+David Liang (2024).
+Intro — Getting Started with Text Embeddings: Using BERT.
 [](https://medium.com/@davidlfliang/intro-getting-started-with-text-embeddings-using-bert-9f8c3b98dee6)
+
+<a id="3">[3]</a>
+Scikit-Learn developers (2025). 
+F1_score.
+[](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html)
+
+<a id="4">[4]</a>
+Vidhi Chug (Sep 10, 2024).
+AUC and the ROC Curve in Machine Learning.
+[](https://www.datacamp.com/tutorial/auc?utm_cid=19589720821&utm_aid=157098104775&utm_campaign=230119_1-ps-other%7Edsa-tofu%7Eall_2-b2c_3-emea_4-prc_5-na_6-na_7-le_8-pdsh-go_9-nb-e_10-na_11-na&utm_loc=9061038-&utm_mtd=-c&utm_kw=&utm_source=google&utm_medium=paid_search&utm_content=ps-other%7Eemea-en%7Edsa%7Etofu%7Etutorial%7Edata-analysis&gad_source=1&gad_campaignid=19589720821&gbraid=0AAAAADQ9WsFuq_Wts9SQJwXe_h0iKK09X&gclid=Cj0KCQiA9OnJBhD-ARIsAPV51xO57WVfMEA2cqKFNJtBFYEAPSppP-6Oa7EeFlJxUeviTeszGnAYK9saAv2YEALw_wcB&dc_referrer=https%3A%2F%2Fwww.google.com%2F)
+
