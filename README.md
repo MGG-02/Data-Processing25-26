@@ -135,16 +135,24 @@ In order to create models able to classify weather a Tweet is _True_, _False_ or
 
 | Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
 |-----------------------|---------------------|-----|---------------|------------|
-| **TF-IDF** | 0.8338 | <span = style="color:green">0.8643</span> | 0.8366 | 0.8310 |
-| **Word2Vec** | 0.7173 | 0.7422 | 0.7713 | **0.7838** |
-| **BERT** | 0.7089 | 0.7339 | 0.7672 | **0.7692** |
+| **TF-IDF** | 0.8338 | ***0.8643*** | 0.8366 | 0.8310 |
+| **Word2Vec** | 0.7173 | 0.7422 | 0.7713 | ***0.7838*** |
+| **BERT** | 0.7089 | 0.7339 | 0.7672 | ***0.7692*** |
 
 | Model \ Vectorization | TF-IDF | Word2Vec | BERT |
 |-----------------------|--------|----------|------|
-| **Logistic Regression** | **0.8338** | 0.7173 | 0.7089 |
+| **Logistic Regression** | ***0.8338*** | 0.7173 | 0.7089 |
 | **SVM** | **0.8643** | 0.7422 | 0.7339 |
-| **Random Forest** | **0.8366** | 0.7713 | 0.7672 |
-| **PyTorch NN** | **0.8310** | 0.7838 | 0.7692 |
+| **Random Forest** | ***0.8366*** | 0.7713 | 0.7672 |
+| **PyTorch NN** | ***0.8310*** | 0.7838 | 0.7692 |
+
+### TF-IDF Neural Network (PyTorch)
+
+| Layer | Output shape | Activation | Dropout |
+|-------|--------------|------------|---------|
+| Input (TF-IDF) | [batch_size, 1000] | – | – |
+| Hidden Layer 1 | [batch_size, 128] | (lineal)  | 0.5 |
+| Output Layer | [batch_size, 3] | (logits)  | – |
 
 ### **PyTorch Neural Network**
 
