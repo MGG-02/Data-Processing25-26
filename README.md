@@ -202,7 +202,7 @@ On the other hand, there is a clear difference in performance when focusing on t
 
 ### F1 score
 
-*F1 score* metric, also known as balanced F-socre, can be interpreted as the harmonic mean of *precision* (percetnage of the predicted positives which are correct) and *recall* (percentage of the correctly predicted positives over all the possible positives). It is computed as shown below.
+*F1 score* metric, also known as balanced F-socre, can be interpreted as the harmonic mean of *precision* (percetnage of the predicted positives which are correct) and *recall* (percentage of the correctly predicted positives over all the possible positives) [[3]](#3). It is computed as shown below.
 
 $$F1 = \frac{2*TP}{2*TP + FP + FN}$$
 
@@ -229,7 +229,7 @@ Based on this metric, it is also possible to do a comparison between the perform
 
 
 ### ROC-AUC score
-*ROC-AUC* or Area Under the Receiver Operating Characteristic Curve evaluates the goodness of each model across the full spectrum of thresholds. More precisely, it is also a number between 0 and 1 that represents the area under the ROC curve that plots the true positive rate (TPR) against the false positive rate (FPR) for all possible decision thresholds, giving this way the probability that the model assigns a higher score to a randomly chosen positive example than to a randomly chosen negative one [[3]](#3). 
+*ROC-AUC* or Area Under the Receiver Operating Characteristic Curve evaluates the goodness of each model across the full spectrum of thresholds. More precisely, it is also a number between 0 and 1 that represents the area under the ROC curve that plots the true positive rate (TPR) against the false positive rate (FPR) for all possible decision thresholds, giving this way the probability that the model assigns a higher score to a randomly chosen positive example than to a randomly chosen negative one [[4]](#4). 
 
 An example of the measure of this metric is given in the figure observed below, in which the area of the ROC  curve (orange one) represents the performance of a model for all the possible true and false possitive ratios.
 
