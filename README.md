@@ -133,6 +133,19 @@ In order to create models able to classify weather a Tweet is _True_, _False_ or
 | **SVM** | **Linear**/Nonlinear | Yes (with kernels) | Strong performance, robust to outliers | Slow on large datasets, requires tuning | High-dimensional features (especially linear kernel) |
 | **Random Forest** | Tree Ensemble | Yes | Captures complex patterns, robust to noise, feature importance | Weak on dense high-dimensional embeddings, can overfit | Tabular data or sparse text vectors |
 
+| Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
+|-----------------------|---------------------|-----|---------------|------------|
+| **TF-IDF** | 0.8338 | **0.8643** | 0.8366 | 0.8310 |
+| **Word2Vec** | 0.7173 | 0.7422 | 0.7713 | **0.7838** |
+| **BERT** | 0.7089 | 0.7339 | 0.7672 | **0.7692** |
+
+| Model \ Vectorization | TF-IDF | Word2Vec | BERT |
+|-----------------------|--------|----------|------|
+| **Logistic Regression** | **0.8338** | 0.7173 | 0.7089 |
+| **SVM** | **0.8643** | 0.7422 | 0.7339 |
+| **Random Forest** | **0.8366** | 0.7713 | 0.7672 |
+| **PyTorch NN** | **0.8310** | 0.7838 | 0.7692 |
+
 ### **PyTorch Neural Network**
 
 To explore different ways of Tweet classification/Spread of desinformation, a Pytorch Neural Network has been created. Neural Networks (**NN**) can learn nonlinear relationships that scikit-learn models struggle with. This is usefull when working with text representation via embeddings, where context vectors dimentions are complex.
