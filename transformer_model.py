@@ -2,32 +2,17 @@
 
 import pandas as pd
 import numpy as np
-from datasets import Dataset, DatasetDict
-from sklearn.model_selection import train_test_split
+from transformer_data_prepro import preprocess_data
 from transformers import (
-    AutoTokenizer,
     AutoModelForSequenceClassification,  #Loading this instead of RoBERTa directly is usefull to avoid implementing your own classifier, as it already provides it
     DataCollatorWithPadding,
     Trainer,
     TrainingArguments,
     EarlyStoppingCallback
-)
-import torch 
+) 
 from sklearn.metrics import accuracy_score
 
 #AutoModelFrSeq... classifier is already composed by a Dense Layer, Dropout Layer and a Softmax Layer
-
-data_path = 'csv_Dataset.csv'
-df = pd.read_csv(data_path)
-
-train_df, temp_df = train_test_split(df, test_size=0.3, random_state=42, stratify=df["target"])
-val_df, test_df = train_test_split(temp_df, test_size=0.5, random_state=42, stratify=temp_df["target"])
-
-dataset = DatasetDict({
-    "train": Dataset.from_pandas(train_df),
-    "val": Dataset.from_pandas(val_df),
-    "test": Dataset.from_pandas(test_df)
-    }) # type: ignore
 
 #https://huggingface.co/transformers/v3.0.2/model_doc/roberta.html#transformers.RobertaConfig
 model1_name = "roberta-base"
@@ -35,26 +20,7 @@ model1_name = "roberta-base"
 #https://github.com/VinAIResearch/BERTweet
 model2_name = "vinai/bertweet-base"
 
-tokenizer = AutoTokenizer.from_pretrained("vinai/bertweet-base", use_fast=False)
-
-dataset = dataset.remove_columns([col for col in dataset["train"].column_names if col not in ["text", "target"]])
-dataset = dataset.rename_columns(column_mapping = {'target': 'labels'})
-
-
-def tokenize(batch):
-    return tokenizer(batch['text'],
-                     truncation = True,
-                     padding = "max_length",
-                     max_length = 128)
-
-label_map = {"false": 0, "true": 1, "unverified": 2}
-
-def encode_labels(example):
-    example["labels"] = label_map[example["labels"]]
-    return example
-
-dataset = dataset.map(encode_labels)
-dataset = dataset.map(tokenize, batched=True)
+dataset, tokenizer, _ = preprocess_data()
 
 print(dataset)
 
