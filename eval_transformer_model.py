@@ -1,14 +1,15 @@
 import torch
+import numpy as np
 from transformer_data_prepro import preprocess_data
-from sklearn.metrics import (accuracy_score, f1_score, precision_score,
-                             recall_score, classification_report)
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
 
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 checkpoint_path = "./finetuned-model/checkpoint-6724/"
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 tokenizer = AutoTokenizer.from_pretrained(checkpoint_path)
-model = AutoModelForSequenceClassification.from_pretrained(checkpoint_path)
+model = AutoModelForSequenceClassification.from_pretrained(checkpoint_path).to(device)
 model.eval()
 
 dataset, tokenizer, _ = preprocess_data()
@@ -25,20 +26,34 @@ from torch.utils.data import DataLoader
 test_loader = DataLoader(dataset['test'], batch_size=32)        #type:ignore
 all_preds = []
 all_labels = []
+all_probs = []
+
+print(device)
+batch = next(iter(test_loader))
+print(type(batch))
+print(batch)
 
 with torch.no_grad():
     for batch in test_loader:
-        input_ids = batch["input_ids"]
-        attention_mask = batch["attention_mask"]
+        input_ids = batch['input_ids'].to(device)
+        attention_mask = batch['attention_mask'].to(device)
+        labels = batch['labels'].to(device)
 
         outputs = model(input_ids=input_ids, attention_mask=attention_mask)
-        logits = outputs.logits
-        preds = torch.argmax(logits, dim=-1).cpu().numpy()
 
-        all_preds.extend(preds)
-        all_labels.extend(batch['labels'].numpy())
+        logits = outputs.logits                  # (batch, num_classes)
+        probs = torch.softmax(logits, dim=1)
+        preds = torch.argmax(logits, dim=1)
 
-print("Accuracy:", accuracy_score(all_labels, all_preds))
-print("\nF1 (macro):", f1_score(all_labels, all_preds, average="macro"))
-print("\nClassification Report:\n")
-print(classification_report(all_labels, all_preds, target_names=["false", "true", "unverified"]))
+        all_preds.append(preds.cpu().numpy())
+        all_labels.append(labels.cpu().numpy())
+        all_probs.append(probs.cpu().numpy())
+
+all_preds = np.concatenate(all_preds)
+all_labels = np.concatenate(all_labels)
+all_probs  = np.concatenate(all_probs)
+
+
+print("\nAccuracy:", accuracy_score(all_labels, all_preds))
+print(f'Test Roc Auc Score: {roc_auc_score(all_labels, all_probs, multi_class='ovr')}')
+print("F1 (macro):", f1_score(all_labels, all_preds, average="macro"))
