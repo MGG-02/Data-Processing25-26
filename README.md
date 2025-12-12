@@ -52,11 +52,15 @@ It includes source tweets and full reply threads across multiple major news even
 
 Copy repo into local machine:
 
-<pre> bash: ~$ git clone https://github.com/MGG-02/Data-Processing25-26.git </pre>
+```bash
+git clone https://github.com/MGG-02/Data-Processing25-26.git
+```
 
 ### 3.1 Exploratory Analysis  
 
-<pre> bash: ~$ python3 DataBasicStats-GenDescript.py </pre>
+```bash
+python3 DataBasicStats-GenDescript.py
+```
 
 - Dataset dimentions, data types and dataset samples  
 - Missing values  
@@ -241,6 +245,10 @@ python3 BERT_torch_clf.py
 ### **Transformer Fine-Tuning**
 ```bash
 python3 transformer_model.py
+```
+
+```bash
+python3 eval_transformer_model.py
 ```
 
 ## 4. Results
