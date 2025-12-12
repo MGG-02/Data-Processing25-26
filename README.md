@@ -188,6 +188,11 @@ For each vectorization technique, the following neural network configurations ha
   <em>Figure 6: Pytorch NN for Classification via TF-IDF Vectorization</em>
 </p>
 
+*   **Architecture**: Shallow network with 1 hidden layer (128 units).
+*   **Activation**: **GELU** (Gaussian Error Linear Unit).
+*   **Details**: optimized for high-dimensional sparse inputs from TF-IDF.
+
+
 #### **Word2Vec vectorization**
 
 <p align="center">
@@ -196,6 +201,11 @@ For each vectorization technique, the following neural network configurations ha
   <em>Figure 7: Pytorch NN for Classification via Word2Vec Vectorization</em>
 </p>
 
+*   **Architecture**: Deep network with 2 hidden layers (128 $\to$ 64 units).
+*   **Activation**: **PReLU** (Parametric ReLU).
+*   **Details**: Uses **LayerNorm** for stability with dense embeddings and dropout for regularization.
+
+
 #### **BERT vectorization**
 
 <p align="center">
@@ -203,6 +213,11 @@ For each vectorization technique, the following neural network configurations ha
   <br>
   <em>Figure 8: Pytorch NN for Classification via BERT Vectorization</em>
 </p>
+
+*   **Architecture**: Deep Multi-Layer Perceptron (MLP) (512 $\to$ 256 $\to$ 128 units).
+*   **Activation**: **GELU**.
+*   **Details**: Acts as a classification head on top of BERT embeddings, using dropout to prevent overfitting.
+
 
 ## 4. Results
 
