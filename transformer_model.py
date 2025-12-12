@@ -64,5 +64,48 @@ trainer = Trainer(
 
 trainer.train()
 
+# Plotting
+import matplotlib.pyplot as plt
+
+log_history = trainer.state.log_history
+
+train_loss = []
+train_epochs = []
+val_loss = []
+val_acc = []
+val_epochs = []
+
+for entry in log_history:
+    if 'loss' in entry and 'epoch' in entry:
+        train_loss.append(entry['loss'])
+        train_epochs.append(entry['epoch'])
+    if 'eval_loss' in entry and 'epoch' in entry:
+        val_loss.append(entry['eval_loss'])
+        val_acc.append(entry['eval_accuracy'])
+        val_epochs.append(entry['epoch'])
+
+plt.figure(figsize=(12, 5))
+
+# Loss
+plt.subplot(1, 2, 1)
+plt.plot(train_epochs, train_loss, label='Train Loss')
+plt.plot(val_epochs, val_loss, label='Val Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.title('Training vs Validation Loss')
+plt.legend()
+
+# Accuracy
+plt.subplot(1, 2, 2)
+plt.plot(val_epochs, val_acc, label='Val Accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.title('Validation Accuracy')
+plt.legend()
+
+plt.tight_layout()
+plt.savefig('transformer_training.png')
+print("Figure saved as transformer_training.png")
+
 results = trainer.evaluate()   # just gets evaluation metrics
 print(results)

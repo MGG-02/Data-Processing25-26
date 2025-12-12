@@ -212,7 +212,7 @@ To validate the training process of the neural network models, we analyze the ev
 **TF-IDF Neural Network Training:**
 The plot below shows the training performance of the PyTorch NN using TF-IDF vectors. We observe the Training and Validation Loss decreasing, indicating the model is learning without immediate overfitting.
 <p align="center">
-  <img src="images/TF-IDF_NN_trainig.png" alt="TF-IDF NN Training" width="800">
+  <img src="images/TF-IDF_NN_training.png" alt="TF-IDF NN Training" width="800">
   <br>
   <em>Figure 10: Training and Validation metrics for TF-IDF Neural Network</em>
 </p>
@@ -220,7 +220,7 @@ The plot below shows the training performance of the PyTorch NN using TF-IDF vec
 **Word2Vec Neural Network Training:**
 Here we display the convergence for the Word2Vec-based Neural Network. The validation accuracy stabilizes, suggesting the model reaches its capacity given the static embeddings.
 <p align="center">
-  <img src="images/W2V_NN_trainig.png" alt="W2V NN Training" width="800">
+  <img src="images/W2V_NN_training.png" alt="W2V NN Training" width="800">
   <br>
   <em>Figure 11: Training and Validation metrics for Word2Vec Neural Network</em>
 </p>
@@ -228,7 +228,7 @@ Here we display the convergence for the Word2Vec-based Neural Network. The valid
 **BERT (Feature Extraction) Neural Network Training:**
 For the BERT-based classifier (using frozen embeddings), the metrics show how the dense layers adapt to the rich semantic features provided by BERT.
 <p align="center">
-  <img src="images/BERT_NN_trainig.png" alt="BERT NN Training" width="800">
+  <img src="images/BERT_NN_training.png" alt="BERT NN Training" width="800">
   <br>
   <em>Figure 12: Training and Validation metrics for BERT (Feature Extraction) Neural Network</em>
 </p>
