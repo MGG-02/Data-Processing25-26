@@ -216,18 +216,18 @@ Where TP is the true positives, TN is the true negatives, FP is the false positi
 
 | Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
 |-----------------------|---------------------|-----|---------------|------------|
-| **TF-IDF** | 0.8338 | ***0.8643*** | 0.8366 | 0.8310 |
-| **Word2Vec** | 0.7173 | 0.7422 | 0.7713 | ***0.7838*** |
-| **BERT** | 0.7089 | 0.7339 | 0.7672 | ***0.7692*** |
+| **TF-IDF** | 0.8338 | ***0.8643*** | 0.8366 | 0.8283 |
+| **Word2Vec** | 0.7173 | 0.7588 | 0.7526 | ***0.7796*** |
+| **BERT** | 0.7089 | 0.7339 | ***0.7672*** | 0.7651 |
 
 Focusing on the performance of every classification model for each text vectorization method (rows of the above table), there is a very slight difference between the results, being different models the most adequated for each vectorization technique. This means that the performance of each configuration does not have a strong dependency on the classification model used. In addition, an accuracy of 70% to 87% has been achieved for all the cases, considering the configuration of the parameters used for each case moderately good.
 
 | Model \ Vectorization | TF-IDF | Word2Vec | BERT |
 |-----------------------|--------|----------|------|
 | **Logistic Regression** | ***0.8338*** | 0.7173 | 0.7089 |
-| **SVM** | **0.8643** | 0.7422 | 0.7339 |
-| **Random Forest** | ***0.8366*** | 0.7713 | 0.7672 |
-| **PyTorch NN** | ***0.8310*** | 0.7838 | 0.7692 |
+| **SVM** | **0.8643** | 0.7588 | 0.7339 |
+| **Random Forest** | ***0.8366*** | 0.7526 | 0.7672 |
+| **PyTorch NN** | ***0.8283*** | 0.7796 | 0.7651 |
 
 On the other hand, there is a clear difference in performance when focusing on the vectorization technique used for each classification model, being the indisputable winner the TF-IDF method with a difference of around 10% with the other techniques. The particular case that has thrown the best result is the **TF-IF vectorization and SVM classification model**.
 
@@ -243,18 +243,35 @@ Based on this metric, it is also possible to do a comparison between the perform
 
 | Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
 |-----------------------|---------------------|-----|---------------|------------|
-| **TF-IDF** | 0.8338 | ***0.8643*** | 0.8366 | 0.8308 |
-| **Word2Vec** | 0.7173 | 0.7422 | 0.7713 | ***0.7823*** |
-| **BERT** | 0.7089 | 0.7339 | ***0.7672*** | 0.7664 |
+| **TF-IDF** | 0.8340 | ***0.8636*** | 0.8342 | 0.8288 |
+| **Word2Vec** | 0.7180 | 0.7540 | 0.7482 | ***0.7786*** |
+| **BERT** | 0.7088 | 0.7299 | 0.7582 | ***0.7621*** |
 
-(Explain)
+**(F1 Score - Weighted)**
 
 | Model \ Vectorization | TF-IDF | Word2Vec | BERT |
 |-----------------------|--------|----------|------|
-| **Logistic Regression** | ***0.8338*** | 0.7173 | 0.7089 |
-| **SVM** | **0.8643** | 0.7422 | 0.7339 |
-| **Random Forest** | ***0.8366*** | 0.7713 | 0.7672 |
-| **PyTorch NN** | ***0.8308*** | 0.7823 | 0.7664 |
+| **Logistic Regression** | ***0.8340*** | 0.7180 | 0.7088 |
+| **SVM** | **0.8636** | 0.7540 | 0.7299 |
+| **Random Forest** | ***0.8342*** | 0.7482 | 0.7582 |
+| **PyTorch NN** | ***0.8288*** | 0.7786 | 0.7621 |
+
+### F1 Score (Macro)
+
+| Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
+|-----------------------|---------------------|-----|---------------|------------|
+| **TF-IDF** | 0.8311 | ***0.8583*** | 0.8299 | 0.8201 |
+| **Word2Vec** | 0.7118 | 0.7434 | 0.7398 | ***0.7729*** |
+| **BERT** | 0.7008 | 0.7197 | 0.7479 | ***0.7530*** |
+
+**(F1 Score - Macro)**
+
+| Model \ Vectorization | TF-IDF | Word2Vec | BERT |
+|-----------------------|--------|----------|------|
+| **Logistic Regression** | ***0.8311*** | 0.7118 | 0.7008 |
+| **SVM** | **0.8583** | 0.7434 | 0.7197 |
+| **Random Forest** | ***0.8299*** | 0.7398 | 0.7479 |
+| **PyTorch NN** | ***0.8201*** | 0.7729 | 0.7530 |
 
 (Explain)
 
@@ -276,18 +293,18 @@ The same comparison will be made for the classification models and vectorization
 
 | Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
 |-----------------------|---------------------|-----|---------------|------------|
-| **TF-IDF** | 0.9440 | ***0.9552*** | 0.9530 | 0.9313 |
-| **Word2Vec** | 0.8785 | 0.8852 | 0.8934 | ***0.9190*** |
-| **BERT** | 0.8786 | 0.8729 | 0.9034 | ***0.9118*** |
+| **TF-IDF** | 0.9440 | ***0.9552*** | 0.9530 | 0.9305 |
+| **Word2Vec** | 0.8746 | 0.8821 | 0.8895 | ***0.9191*** |
+| **BERT** | 0.8786 | 0.8729 | 0.9034 | ***0.9069*** |
 
 Again, the same conclusion can be made for the classification models used for each vectorization method, the results are not biased enough to make a clear decision in which one is the best. However, for Word2Vec and BERT vectorization technics, the PyTorch neural network seems to throw better results than the TF-IDF one.
 
 | Model \ Vectorization | TF-IDF | Word2Vec | BERT |
 |-----------------------|--------|----------|------|
-| **Logistic Regression** | ***0.9440*** | 0.8785 | 0.8786 |
-| **SVM** | **0.9552** | 0.8852 | 0.8729 |
-| **Random Forest** | ***0.9530*** | 0.8934 | 0.9034 |
-| **PyTorch NN** | ***0.9313*** | 0.9190 | 0.9118 |
+| **Logistic Regression** | ***0.9440*** | 0.8746 | 0.8786 |
+| **SVM** | **0.9552** | 0.8821 | 0.8729 |
+| **Random Forest** | ***0.9530*** | 0.8895 | 0.9034 |
+| **PyTorch NN** | ***0.9305*** | 0.9191 | 0.9069 |
 
 Tf-IDF is also clearly the most performative vectorization technique, giving a top ROC-AUC value of around 95% for every classification method used. 
 
