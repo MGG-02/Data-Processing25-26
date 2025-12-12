@@ -388,7 +388,7 @@ The analysis of the **PHEME Dataset** reveals that simpler, frequency-based meth
 These results provide a clear answer to the initial hypothesis regarding the relationship between disinformation and polarization:
 
 1.  **Validation of Linguistic Cues:** The hypothesis that **false and unverified posts use more uncertain or emotional vocabulary** is supported by the dominance of TF-IDF. Since TF-IDF captures the importance of specific words regardless of order, its high performance implies that disinformation is characterized by a distinct vocabulary—likely loaded, emotional, or polarizing terms—rather than subtle structural nuances that BERT would capture better.
-2.  **Nature of Polarization:** The fact that keyword-based methods (TF-IDF) outperform context-based methods (BERT) suggests that polarized content relies on **overt linguistic markers**. In polarized communities, specific "signal words" often carry heavy weight; the model's ability to detect these markers without deep contextual understanding indicates that the linguistic gap between "true" and "rumour/disinformation" content is lexical rather than semantic.
+2.  **Nature of Polarization:** The fact that keyword-based methods (TF-IDF) outperform context-based methods (BERT) suggests that polarized content relies on **specific linguistic markers**. In polarized communities, specific "signal words" often carry heavy weight; the model's ability to detect these markers without deep contextual understanding indicates that the linguistic gap between "true" and "rumour/disinformation" content is lexical rather than semantic.
 
 ## References
 <a id="1">[1]</a> 
