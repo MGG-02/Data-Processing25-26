@@ -1,0 +1,10 @@
+__pycache__/
+*.csv
+*.pdf
+*.png
+pheme-rumour-scheme-dataset/
+all-rnr-annotated-threads/
+finetuned-model/
+*.md
+!README.md
+!task.md

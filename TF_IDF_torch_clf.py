@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from torch import nn
 from tqdm import trange, tqdm
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, classification_report
 from torch.optim import Adam
 
 #1 Hidden layer in order to create loss
@@ -128,4 +128,8 @@ def evaluate(model, test_dataloader):
 
     print(f'Test Accuracy: {accuracy_score(all_labels, all_preds):.4f}')
     print(f'Test Roc Auc Score: {roc_auc_score(all_labels, all_probs, multi_class='ovr')}')
-    print(f'Test F1 Score: {f1_score(all_labels, all_preds, average="weighted"):.4f}')
+    print(f'Test F1 Score (Weighted): {f1_score(all_labels, all_preds, average="weighted"):.4f}')
+    print(f'Test F1 Score (Macro): {f1_score(all_labels, all_preds, average="macro"):.4f}')
+    print("-" * 30)
+    print("Classification Report:")
+    print(classification_report(all_labels, all_preds))

@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 from transformer_data_prepro import preprocess_data
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, classification_report
 
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
@@ -56,4 +56,8 @@ all_probs  = np.concatenate(all_probs)
 
 print("\nAccuracy:", accuracy_score(all_labels, all_preds))
 print(f'Test Roc Auc Score: {roc_auc_score(all_labels, all_probs, multi_class='ovr')}')
-print("F1 (macro):", f1_score(all_labels, all_preds, average="macro"))
+print(f'Test F1 Score (Weighted): {f1_score(all_labels, all_preds, average="weighted"):.4f}')
+print(f'Test F1 Score (Macro): {f1_score(all_labels, all_preds, average="macro"):.4f}')
+print("-" * 30)
+print("Classification Report:")
+print(classification_report(all_labels, all_preds))

@@ -89,7 +89,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, classification_report
 
 le = LabelEncoder()
 Y = le.fit_transform(Y)     #type: ignore
@@ -116,7 +116,11 @@ print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
 y_test_pred = clf.predict(X_test)
 print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
 print(f'Test Roc Auc Score: {roc_auc_score(y_test, clf.predict_proba(X_test), multi_class='ovr')}')
-print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
+print(f'Test F1 Score (Weighted): {f1_score(y_test, y_test_pred, average="weighted"):.4f}')
+print(f'Test F1 Score (Macro): {f1_score(y_test, y_test_pred, average="macro"):.4f}')
+print("-" * 30)
+print("Classification Report:")
+print(classification_report(y_test, y_test_pred))
 
 print('\n' + '### --- SVM Classifier --- ###' + '\n')
 
@@ -129,7 +133,11 @@ print("Validation Accuracy:", accuracy_score(y_val, y_val_pred))
 y_test_pred = clf.predict(X_test)
 print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
 print(f'Test Roc Auc Score: {roc_auc_score(y_test, clf.predict_proba(X_test), multi_class='ovr')}')
-print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
+print(f'Test F1 Score (Weighted): {f1_score(y_test, y_test_pred, average="weighted"):.4f}')
+print(f'Test F1 Score (Macro): {f1_score(y_test, y_test_pred, average="macro"):.4f}')
+print("-" * 30)
+print("Classification Report:")
+print(classification_report(y_test, y_test_pred))
 
 print('\n'+'### ---  Random Forest Classification --- ###' + '\n')
 
@@ -149,7 +157,11 @@ y_test_proba = rf.predict_proba(X_test)
 
 print(f'Test Accuracy: {accuracy_score(y_test, y_test_pred)}')
 print(f"ROC AUC Score for test SET: {roc_auc_score(y_test, y_test_proba, multi_class='ovr')}")
-print(f'Test F1 Score: {f1_score(y_test, y_test_pred, average='micro')}')
+print(f'Test F1 Score (Weighted): {f1_score(y_test, y_test_pred, average="weighted"):.4f}')
+print(f'Test F1 Score (Macro): {f1_score(y_test, y_test_pred, average="macro"):.4f}')
+print("-" * 30)
+print("Classification Report:")
+print(classification_report(y_test, y_test_pred))
 
 
 
