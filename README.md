@@ -219,6 +219,30 @@ For each vectorization technique, the following neural network configurations ha
 *   **Details**: Acts as a classification head on top of BERT embeddings, using dropout to prevent overfitting.
 
 
+## 3.4 Reproducing Results
+
+To replicate the training and evaluation of the neural network models, execute the following scripts:
+
+### **TF-IDF Neural Network**
+```bash
+python3 TF_IDF_torch_clf.py
+```
+
+### **Word2Vec Neural Network**
+```bash
+python3 W2V_torch_clf.py
+```
+
+### **BERT Neural Network**
+```bash
+python3 BERT_torch_clf.py
+```
+
+### **Transformer Fine-Tuning**
+```bash
+python3 transformer_model.py
+```
+
 ## 4. Results
 
 ### Training Convergence
