@@ -270,6 +270,8 @@ An example of the measure of this metric is given in the figure observed below, 
   <em>Figure 7: ROC curve for a logistic regression model.</em>
 </p>
 
+In essence, having a higher ROC-AUC value means that the model has the ability to give a better separation between one class an the rest of them improving the TPR over the FPR for every possible case.
+
 The same comparison will be made for the classification models and vectorization techniques based on this metric. The results are shown in the tables below.
 
 | Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
@@ -287,7 +289,7 @@ Again, the same conclusion can be made for the classification models used for ea
 | **Random Forest** | ***0.9530*** | 0.8934 | 0.9034 |
 | **PyTorch NN** | ***0.9313*** | 0.9190 | 0.9118 |
 
-Tf-IDF is also clearly the most performative vectorization technique, giving a top ROC-AUC value of around 95% for every classification method used.
+Tf-IDF is also clearly the most performative vectorization technique, giving a top ROC-AUC value of around 95% for every classification method used. 
 
 ### References
 <a id="1">[1]</a> 
