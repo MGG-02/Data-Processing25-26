@@ -206,6 +206,41 @@ For each vectorization technique, the following neural network configurations ha
 
 ## 4. Results
 
+### Training Convergence
+To validate the training process of the neural network models, we analyze the evolution of their Loss and Accuracy metrics over the training epochs.
+
+**TF-IDF Neural Network Training:**
+The plot below shows the training performance of the PyTorch NN using TF-IDF vectors. We observe the Training and Validation Loss decreasing, indicating the model is learning without immediate overfitting.
+<p align="center">
+  <img src="images/TF-IDF_NN_trainig.png" alt="TF-IDF NN Training" width="800">
+  <br>
+  <em>Figure 10: Training and Validation metrics for TF-IDF Neural Network</em>
+</p>
+
+**Word2Vec Neural Network Training:**
+Here we display the convergence for the Word2Vec-based Neural Network. The validation accuracy stabilizes, suggesting the model reaches its capacity given the static embeddings.
+<p align="center">
+  <img src="images/W2V_NN_trainig.png" alt="W2V NN Training" width="800">
+  <br>
+  <em>Figure 11: Training and Validation metrics for Word2Vec Neural Network</em>
+</p>
+
+**BERT (Feature Extraction) Neural Network Training:**
+For the BERT-based classifier (using frozen embeddings), the metrics show how the dense layers adapt to the rich semantic features provided by BERT.
+<p align="center">
+  <img src="images/BERT_NN_trainig.png" alt="BERT NN Training" width="800">
+  <br>
+  <em>Figure 12: Training and Validation metrics for BERT (Feature Extraction) Neural Network</em>
+</p>
+
+**Transformer (Fine-Tuning) Training:**
+Finally, this plot represents the fine-tuning process of the Transformer model (e.g., BERTweet/RoBERTa). We can see the loss minimizing as the model adapts its pre-trained weights to the specific Rumour detection task.
+<p align="center">
+  <img src="images/transformer_training.png" alt="Transformer Fine-Tuning" width="800">
+  <br>
+  <em>Figure 13: Training and Validation metrics for Fine-Tuned Transformer</em>
+</p>
+
 ### Accuracy
 
 **Accuracy** metric in classification models can be defined basically as the ratio between the hits and the complete set of examples in the predictions made, as shown in the expression below.
