@@ -376,7 +376,7 @@ Again, the same conclusion can be made for the classification models used for ea
 
 Tf-IDF is also clearly the most performative vectorization technique, giving a top ROC-AUC value of around 95% for every classification method used. 
 
-### Conclusions
+## 5. Conclusions
 
 The analysis of the **PHEME Dataset** reveals that simpler, frequency-based methods outperformed complex neural architectures for this specific task. 
 
@@ -384,7 +384,7 @@ The analysis of the **PHEME Dataset** reveals that simpler, frequency-based meth
 *   **Neural Networks vs. Classical Models:** While PyTorch Neural Networks provided competitive results (especially with Word2Vec and BERT embeddings), they did not offer a significant advantage over classical Scikit-Learn classifiers. This reinforces the principle that deep learning models often require significantly larger datasets to generalize effectively and outperform simpler baselines.
 *   **Implications:** The results indicate that "shallow" linguistic features are highly effective for rumour detection in this domain. Future work should focus on expanding the dataset size to leverage the full potential of transformer models or exploring hybrid approaches that combine TF-IDF features with semantic embeddings.
 
-### References
+## References
 <a id="1">[1]</a> 
 Kochkina, Elena; Liakata, Maria; Zubiaga, Arkaitz (2018). 
 PHEME dataset for Rumour Detection and Veracity Classification. figshare.
