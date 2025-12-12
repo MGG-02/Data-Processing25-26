@@ -249,7 +249,7 @@ For the BERT-based classifier (using frozen embeddings), the metrics show how th
 </p>
 
 **Transformer (Fine-Tuning) Training:**
-Finally, this plot represents the fine-tuning process of the Transformer model (e.g., BERTweet/RoBERTa). We can see the loss minimizing as the model adapts its pre-trained weights to the specific Rumour detection task.
+Finally, this plot represents the fine-tuning process of the Transformer model (BERTweet). We can see the loss minimizing as the model adapts its pre-trained weights to the specific Rumour detection task.
 <p align="center">
   <img src="images/transformer_training.png" alt="Transformer Fine-Tuning" width="800">
   <br>
