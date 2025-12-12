@@ -133,8 +133,39 @@ In order to create models able to classify weather a Tweet is _True_, _False_ or
 - SVM  
 - Random Forest  
 
+In order to give a better explanation of the functional behaviour of these classification models, it is important to have in mind that they are multiclass, as the aim is to distinguish between three types of tweets, as mentioned previously.
+
+#### **Logistic Regression**
+Logistic regression model predicts one of many possible categories for a given input based on the computation of the probability of this input to be linked to each category using a softmax function, ensuring the sum of all these probabilities is always the unity [[3]](#3). The softmax formula is:
+
+$$P(y = k) = \frac{e^{z_k}}{\sum_j e^{z_j}}$$
+
+Where $z_k$ is the raw score for each class and the denominator term is the sum of all class scores used for normalization.
+
+#### **Support Vector Machine (SVM)**
+SVM model is designed to separate data points into two different classes by finding the optimal hyperplane that maximizes the margin between the clases. When using more than two classes, it is necessary to apply the algorithm for every possible pair of classes (One-vd-One approach), or to train a different algorithm for each class (One-vs-All approach) [[4]](#4). This way, it is possible to sepparate data into three different regions, as shown in the figure below.
+
+<p align="center">
+  <img src="images/SVM.png" alt="" width="600" height="400">
+  <br>
+  <em>Figure 4: Multiclass classification model application on data points (SVM)</em>
+</p>
+
+Logist Regression model also creates boundaries between data points, based on the probabilities estimated as mentioned previously, resulting in a similar approach as the one shown in Figure 4.
+
+#### **Random Forest**
+Random forest model uses diverse decision trees to make better predictions looking at different random parts of the data and their results are combinedcby voting. This improves accuracy and reduces errors very effectively and, because of its structure (Figure 5), it allows to show the importance of each feature (column) for making predictions, helping in understanding datasets information in a better way [[5]](#5).
+
+<p align="center">
+  <img src="images/RF.png" alt="" width="600" height="400">
+  <br>
+  <em>Figure 5: Random Forest classification model functional schematic.</em>
+</p>
+
+All the features, pros and cons of the previously explained classification models are summarized in the table shown below.
+
 | Model | Type | Captures Nonlinearity | Pros | Cons | Works Well With |
-|-------|------|------------------------|------|------|------------------|
+|-------|------|-----------------------|------|------|-----------------|
 | **Logistic Regression** | Linear | No | Simple, fast, interpretable, strong baseline | Limited for complex patterns | High-dimensional embeddings (TF-IDF, BERT) |
 | **SVM** | **Linear**/Nonlinear | Yes (with kernels) | Strong performance, robust to outliers | Slow on large datasets, requires tuning | High-dimensional features (especially linear kernel) |
 | **Random Forest** | Tree Ensemble | Yes | Captures complex patterns, robust to noise, feature importance | Weak on dense high-dimensional embeddings, can overfit | Tabular data or sparse text vectors |
@@ -247,7 +278,7 @@ The same comparison will be made for the classification models and vectorization
 | **Word2Vec** | 0.8785 | 0.8852 | 0.8934 | ***0.9190*** |
 | **BERT** | 0.8786 | 0.8729 | 0.9034 | ***0.9118*** |
 
-Again, the same conclusion can be made for the classification models used for each vectorization method, the results are not biased enough to make a clear decision in which one is the best. However, for Word2Vec and BERT vectorization technics, both based on word embeddings, the PyTorch neural network seems to throw better results than the TF-IDF one.
+Again, the same conclusion can be made for the classification models used for each vectorization method, the results are not biased enough to make a clear decision in which one is the best. However, for Word2Vec and BERT vectorization technics, the PyTorch neural network seems to throw better results than the TF-IDF one.
 
 | Model \ Vectorization | TF-IDF | Word2Vec | BERT |
 |-----------------------|--------|----------|------|
@@ -270,12 +301,26 @@ Intro — Getting Started with Text Embeddings: Using BERT.
 [](https://medium.com/@davidlfliang/intro-getting-started-with-text-embeddings-using-bert-9f8c3b98dee6)
 
 <a id="3">[3]</a>
+shrurfu5 via Geeksforgeeks (Aug 23, 2025).
+Multiclass logistic regression.
+[](https://www.geeksforgeeks.org/artificial-intelligence/multiclass-logistic-regression/)
+
+<a id="4">[4]</a>
+jyotijb23 via Geeksforgeeks (Jul 23, 2025).
+Multi-class classification using Support Vector Machines (SVM).
+[](https://www.geeksforgeeks.org/machine-learning/multi-class-classification-using-support-vector-machines-svm/)
+
+<a id="5">[5]</a>
+Susmit Sekhar Bhakta via Geeksforgeeks (Oct 31, 2025).
+Random Forest Algorithm in Machine Learning.
+[](https://www.geeksforgeeks.org/machine-learning/random-forest-algorithm-in-machine-learning/)
+
+<a id="6">[6]</a>
 Scikit-Learn developers (2025). 
 F1_score.
 [](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html)
 
-<a id="4">[4]</a>
+<a id="7">[7]</a>
 Vidhi Chug (Sep 10, 2024).
 AUC and the ROC Curve in Machine Learning.
 [](https://www.datacamp.com/tutorial/auc?utm_cid=19589720821&utm_aid=157098104775&utm_campaign=230119_1-ps-other%7Edsa-tofu%7Eall_2-b2c_3-emea_4-prc_5-na_6-na_7-le_8-pdsh-go_9-nb-e_10-na_11-na&utm_loc=9061038-&utm_mtd=-c&utm_kw=&utm_source=google&utm_medium=paid_search&utm_content=ps-other%7Eemea-en%7Edsa%7Etofu%7Etutorial%7Edata-analysis&gad_source=1&gad_campaignid=19589720821&gbraid=0AAAAADQ9WsFuq_Wts9SQJwXe_h0iKK09X&gclid=Cj0KCQiA9OnJBhD-ARIsAPV51xO57WVfMEA2cqKFNJtBFYEAPSppP-6Oa7EeFlJxUeviTeszGnAYK9saAv2YEALw_wcB&dc_referrer=https%3A%2F%2Fwww.google.com%2F)
-
