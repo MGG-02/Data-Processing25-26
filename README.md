@@ -344,6 +344,10 @@ Again, the same conclusion can be made for the classification models used for ea
 
 Tf-IDF is also clearly the most performative vectorization technique, giving a top ROC-AUC value of around 95% for every classification method used. 
 
+### Conclusions
+
+The used Dataset is not large enough to require a heavy NN as the one that transformers provide. This is reflected when TF-IDF Vectorization provides the best accuracy for every classification duty, meaning that sometimes, there is no need to capture full context neither to create the perfect word connections.
+
 ### References
 <a id="1">[1]</a> 
 Kochkina, Elena; Liakata, Maria; Zubiaga, Arkaitz (2018). 
