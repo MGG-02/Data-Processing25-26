@@ -241,12 +241,6 @@ Where *TP* is the number of true positives, *FP* is the number of false positive
 
 Based on this metric, it is also possible to do a comparison between the performance por each classification model and text vectorization methods combined.
 
-| Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
-|-----------------------|---------------------|-----|---------------|------------|
-| **TF-IDF** | 0.8340 | ***0.8636*** | 0.8342 | 0.8288 |
-| **Word2Vec** | 0.7180 | 0.7540 | 0.7482 | ***0.7786*** |
-| **BERT** | 0.7088 | 0.7299 | 0.7582 | ***0.7621*** |
-
 **(F1 Score - Weighted)**
 
 | Model \ Vectorization | TF-IDF | Word2Vec | BERT |
@@ -255,14 +249,6 @@ Based on this metric, it is also possible to do a comparison between the perform
 | **SVM** | **0.8636** | 0.7540 | 0.7299 |
 | **Random Forest** | ***0.8342*** | 0.7482 | 0.7582 |
 | **PyTorch NN** | ***0.8288*** | 0.7786 | 0.7621 |
-
-### F1 Score (Macro)
-
-| Vectorization \ Model | Logistic Regression | SVM | Random Forest | PyTorch NN |
-|-----------------------|---------------------|-----|---------------|------------|
-| **TF-IDF** | 0.8311 | ***0.8583*** | 0.8299 | 0.8201 |
-| **Word2Vec** | 0.7118 | 0.7434 | 0.7398 | ***0.7729*** |
-| **BERT** | 0.7008 | 0.7197 | 0.7479 | ***0.7530*** |
 
 **(F1 Score - Macro)**
 
