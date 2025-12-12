@@ -185,7 +185,7 @@ For each vectorization technique, the following neural network configurations ha
 <p align="center">
   <img src="images/NN-TF-IDF.JPG" alt="Neural Network" width="400" height="300">
   <br>
-  <em>Figure 4: Pytorch NN for Classification via TF-IDF Vectorization</em>
+  <em>Figure 6: Pytorch NN for Classification via TF-IDF Vectorization</em>
 </p>
 
 #### **Word2Vec vectorization**
@@ -193,7 +193,7 @@ For each vectorization technique, the following neural network configurations ha
 <p align="center">
   <img src="images/NN-W2V.JPG" alt="Neural Network" width="400" height="300">
   <br>
-  <em>Figure 5: Pytorch NN for Classification via Word2Vec Vectorization</em>
+  <em>Figure 7: Pytorch NN for Classification via Word2Vec Vectorization</em>
 </p>
 
 #### **BERT vectorization**
@@ -201,7 +201,7 @@ For each vectorization technique, the following neural network configurations ha
 <p align="center">
   <img src="images/NN-BERT.JPG" alt="Neural Network" width="400" height="300">
   <br>
-  <em>Figure 6: Pytorch NN for Classification via BERT Vectorization</em>
+  <em>Figure 8: Pytorch NN for Classification via BERT Vectorization</em>
 </p>
 
 ## 4. Results
@@ -270,7 +270,7 @@ An example of the measure of this metric is given in the figure observed below, 
 <p align="center">
   <img src="images/ROCAUC.png" alt="Neural Network" width="400" height="300">
   <br>
-  <em>Figure 7: ROC curve for a logistic regression model.</em>
+  <em>Figure 9: ROC curve for a logistic regression model.</em>
 </p>
 
 In essence, having a higher ROC-AUC value means that the model has the ability to give a better separation between one class an the rest of them improving the TPR over the FPR for every possible case.
