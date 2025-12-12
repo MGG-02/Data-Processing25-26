@@ -146,7 +146,7 @@ Where $z_k$ is the raw score for each class and the denominator term is the sum 
 SVM model is designed to separate data points into two different classes by finding the optimal hyperplane that maximizes the margin between the clases. When using more than two classes, it is necessary to apply the algorithm for every possible pair of classes (One-vd-One approach), or to train a different algorithm for each class (One-vs-All approach) [[4]](#4). This way, it is possible to sepparate data into three different regions, as shown in the figure below.
 
 <p align="center">
-  <img src="images/SVM.png" alt="" width="600" height="400">
+  <img src="images/SVM.png" alt="" width="400" height="400">
   <br>
   <em>Figure 4: Multiclass classification model application on data points (SVM)</em>
 </p>
@@ -157,7 +157,7 @@ Logist Regression model also creates boundaries between data points, based on th
 Random forest model uses diverse decision trees to make better predictions looking at different random parts of the data and their results are combinedcby voting. This improves accuracy and reduces errors very effectively and, because of its structure (Figure 5), it allows to show the importance of each feature (column) for making predictions, helping in understanding datasets information in a better way [[5]](#5).
 
 <p align="center">
-  <img src="images/RF.png" alt="" width="600" height="400">
+  <img src="images/RF.png" alt="" width="500" height="400">
   <br>
   <em>Figure 5: Random Forest classification model functional schematic.</em>
 </p>
@@ -183,7 +183,7 @@ For each vectorization technique, the following neural network configurations ha
 #### **TF-IDF vectorization**
 
 <p align="center">
-  <img src="images/NN-TF-IDF.JPG" alt="Neural Network" width="400" height="300">
+  <img src="images/NN-TF-IDF.JPG" alt="Neural Network" width="400" height="360">
   <br>
   <em>Figure 6: Pytorch NN for Classification via TF-IDF Vectorization</em>
 </p>
@@ -191,7 +191,7 @@ For each vectorization technique, the following neural network configurations ha
 #### **Word2Vec vectorization**
 
 <p align="center">
-  <img src="images/NN-W2V.JPG" alt="Neural Network" width="400" height="300">
+  <img src="images/NN-W2V.JPG" alt="Neural Network" width="400" height="360">
   <br>
   <em>Figure 7: Pytorch NN for Classification via Word2Vec Vectorization</em>
 </p>
@@ -199,7 +199,7 @@ For each vectorization technique, the following neural network configurations ha
 #### **BERT vectorization**
 
 <p align="center">
-  <img src="images/NN-BERT.JPG" alt="Neural Network" width="400" height="300">
+  <img src="images/NN-BERT.JPG" alt="Neural Network" width="400" height="360">
   <br>
   <em>Figure 8: Pytorch NN for Classification via BERT Vectorization</em>
 </p>
