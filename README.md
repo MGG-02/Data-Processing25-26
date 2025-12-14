@@ -395,6 +395,7 @@ The analysis of the **PHEME Dataset** reveals that simpler, frequency-based meth
 
 *   **Performance Winner:** **TF-IDF with SVM** achieved the highest accuracy (~86%) and ROC-AUC (~95%), surpassing both Word2Vec and BERT-based approaches. This suggests that for this specific dataset size (2402 tweets) and task, the presence of specific keywords is a stronger predictor of veracity than the complex semantic context captured by transformers.
 *   **Neural Networks vs. Classical Models:** While PyTorch Neural Networks provided competitive results (especially with Word2Vec and BERT embeddings), they did not offer a significant advantage over classical Scikit-Learn classifiers. This reinforces the principle that deep learning models often require significantly larger datasets to generalize effectively and outperform simpler baselines.
+*   **Transformer Model:** The transformer model is the heaviest and most complicated model from the selected ones, but regarding this, it's not outperforming. This behavior suggest again, that for reduced size of data and small sentences, lighter model obtain better results for much less computational resources.
 
 ### Interpretation regarding Disinformation and Polarization
 
