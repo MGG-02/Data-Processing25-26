@@ -341,7 +341,7 @@ Based on this metric, it is also possible to do a comparison between the perform
 | **Random Forest** | ***0.8299*** | 0.7398 | 0.7479 |
 | **PyTorch NN** | ***0.8201*** | 0.7729 | 0.7530 |
 
-(Explain)
+Based on the results obtained in the tables above, TF-IDF is the top-scorer for every classification model. In this case, TF-IDF punctuation is much higher than the other two vectorizations. This can be task relies strongly on lexical cues and discriminative terms rather than deep semantic representations
 
 
 ### ROC-AUC score
