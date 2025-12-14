@@ -313,8 +313,6 @@ Focusing on the performance of every classification model for each text vectoriz
 
 On the other hand, there is a clear difference in performance when focusing on the vectorization technique used for each classification model, being the indisputable winner the TF-IDF method with a difference of around 10% with the other techniques. The particular case that has thrown the best result is the **TF-IF vectorization and SVM classification model**.
 
-Additionally, the **Fine-Tuned BERTweet Transformer** obtained an accuracy of **0.8283**.
-
 ### F1 score
 
 *F1 score* metric, also known as balanced F-socre, can be interpreted as the harmonic mean of *precision* (percetnage of the predicted positives which are correct) and *recall* (percentage of the correctly predicted positives over all the possible positives) [[3]](#3). It is computed as shown below.
@@ -343,7 +341,7 @@ Based on this metric, it is also possible to do a comparison between the perform
 | **Random Forest** | ***0.8299*** | 0.7398 | 0.7479 |
 | **PyTorch NN** | ***0.8201*** | 0.7729 | 0.7530 |
 
-For the **Fine-Tuned BERTweet Transformer**, the F1 scores obtained are **0.8279** (Weighted) and **0.8224** (Macro).
+(Explain)
 
 
 ### ROC-AUC score
@@ -376,9 +374,20 @@ Again, the same conclusion can be made for the classification models used for ea
 | **Random Forest** | ***0.9530*** | 0.8895 | 0.9034 |
 | **PyTorch NN** | ***0.9305*** | 0.9191 | 0.9069 |
 
-Tf-IDF is also clearly the most performative vectorization technique, giving a top ROC-AUC value of around 95% for every classification method used. 
+Tf-IDF is also clearly the most performative vectorization technique, giving a top ROC-AUC value of around 95% for every classification method used.
 
-The **Fine-Tuned BERTweet Transformer** achieved a ROC-AUC score of **0.9154**.
+### **Fine-Tuned BERTweet Transformer Results**
+
+In addition to the classical models and standard neural networks, a **BERTweet Transformer** model was fine-tuned for this specific task. The results obtained are summarized below:
+
+| Metric | Score |
+| :--- | :--- |
+| **Accuracy** | **0.8283** |
+| **ROC-AUC** | **0.9154** |
+| **F1 Score (Weighted)** | **0.8279** |
+| **F1 Score (Macro)** | **0.8224** |
+
+The fine-tuned transformer achieves a high **ROC-AUC (0.9154)**, indicating excellent capability in distinguishing between classes, competing closely with the best TF-IDF models. Its accuracy and F1 scores are robust (~83%), significantly outperforming the standard BERT feature extraction approach (Accuracy ~76%) and demonstrating the value of fine-tuning the model weights for the specific nuances of the PHEME dataset.
 
 ## 5. Conclusions
 
